@@ -3,21 +3,20 @@
     <item
         android:id="@+id/feed"
         android:title="Feed"
-        android:icon="@drawable/ic_feed_foreground"/>
+        android:icon="@drawable/ic_baseline_home_24"/>
     <item
         android:id="@+id/map"
         android:title="Map"
-        android:icon="@drawable/ic_map_foreground"/>
+        android:icon="@drawable/ic_baseline_map_24"/>
     <item
-        android:id="@+id/write"
-        android:title="Write"
-        android:icon="@drawable/ic_write_foreground"/>
+        android:id="@+id/placeholder"
+        android:title=" "/>
     <item
         android:id="@+id/gallery"
         android:title="Gallery"
-        android:icon="@drawable/ic_gallery_foreground"></item>
+        android:icon="@drawable/ic_baseline_gallery_24"></item>
     <item
         android:id="@+id/mypage"
         android:title="My Page"
-        android:icon="@drawable/ic_mypage_foreground"></item>
+        android:icon="@drawable/ic_baseline_mypage_24"></item>
 </menu>

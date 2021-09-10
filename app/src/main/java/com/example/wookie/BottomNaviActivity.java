@@ -1,7 +1,9 @@
 package com.example.wookie;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,9 +13,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wookie.Feed.FeedActivity;
 import com.example.wookie.Gallery.GalleryActivity;
+import com.example.wookie.Group.GroupListActivity;
 import com.example.wookie.MyPage.MyPageActivity;
 import com.example.wookie.Post.WriteActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 public class BottomNaviActivity extends AppCompatActivity {
@@ -23,9 +27,10 @@ public class BottomNaviActivity extends AppCompatActivity {
 
     private FeedActivity feedActivity;
     private MapActivity mapActivity;
-    private WriteActivity writeActivity;
     private GalleryActivity galleryActivity;
     private MyPageActivity myPageActivity;
+
+    private FloatingActionButton writeBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +38,18 @@ public class BottomNaviActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bottom_navigation);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        writeBtn = findViewById(R.id.write);
+
+        writeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(BottomNaviActivity.this, WriteActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bottomNavigationView.setBackground(null);
+        bottomNavigationView.getMenu().getItem(2).setEnabled(false);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -45,7 +62,7 @@ public class BottomNaviActivity extends AppCompatActivity {
                     case R.id.map:
                         setFrag(1);
                         break;
-                    case R.id.write:
+                    case R.id.placeholder:
                         setFrag(2);
                         break;
                     case R.id.gallery:
@@ -61,7 +78,6 @@ public class BottomNaviActivity extends AppCompatActivity {
 
         feedActivity = new FeedActivity();
         mapActivity = new MapActivity();
-        writeActivity = new WriteActivity();
         galleryActivity = new GalleryActivity();
         myPageActivity = new MyPageActivity();
 
@@ -84,8 +100,6 @@ public class BottomNaviActivity extends AppCompatActivity {
                 ft.commit();
                 break;
             case 2:
-                ft.replace(R.id.main_frame, writeActivity);
-                ft.commit();
                 break;
             case 3:
                 ft.replace(R.id.main_frame, galleryActivity);
