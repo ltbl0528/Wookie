@@ -8,8 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Wookie"
-        android:name=".KakaoApplication">
+        android:name=".KakaoApplication"
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"></activity>
+        <activity android:name=".Group.GroupListActivity"></activity>
+        <activity android:name=".BottomNaviActivity"></activity>
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

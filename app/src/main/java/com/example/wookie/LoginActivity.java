@@ -9,6 +9,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.wookie.Group.GroupListActivity;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //카카오톡 설치 되었는지? 안녕?
+                //카카오톡 설치 되었는지?
                 if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)){
                     UserApiClient.getInstance().loginWithKakaoTalk(LoginActivity.this, callback);
                 }
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null){//로그인 되면
                     //id = user.getId()
                     //userProfile = user.getKakaoAccount().getProfile();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, GroupListActivity.class);
                     // intent.putExtra("id", user.getId());
                     startActivity(intent);
                     finish();
