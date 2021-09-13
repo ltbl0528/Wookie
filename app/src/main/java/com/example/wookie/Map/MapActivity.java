@@ -1,4 +1,4 @@
-package com.example.wookie;
+package com.example.wookie.Map;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.wookie.R;
 
 public class MapActivity extends Fragment {
     public MapActivity(){

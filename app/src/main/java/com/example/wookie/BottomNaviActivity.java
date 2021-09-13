@@ -13,9 +13,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wookie.Feed.FeedActivity;
 import com.example.wookie.Gallery.GalleryActivity;
-import com.example.wookie.Group.GroupListActivity;
+import com.example.wookie.Map.MapActivity;
 import com.example.wookie.MyPage.MyPageActivity;
-import com.example.wookie.Post.WriteActivity;
+import com.example.wookie.Post.WritePostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -43,7 +43,7 @@ public class BottomNaviActivity extends AppCompatActivity {
         writeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(BottomNaviActivity.this, WriteActivity.class);
+                Intent intent = new Intent(BottomNaviActivity.this, WritePostActivity.class);
                 startActivity(intent);
             }
         });
