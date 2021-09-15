@@ -30,19 +30,11 @@ public class FeedActivity extends Fragment {
 
         view = inflater.inflate(R.layout.activity_feed, container, false);
 
-        contentText = view.findViewById(R.id.content_text);
+        contentText = view.findViewById(R.id.post_content);
 
         contentText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //보낼 데이터 있을 경우 주석 풀어서 쓰기
-                //Bundle bundle = new Bundle();
-                //bundle.putString("fromFeedActivity", "여기에는 글 ID 같은 거");
-//                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//                ReadPostActivity readPostActivity = new ReadPostActivity();
-//                //readPostActivity.setArguments(bundle);
-//                transaction.replace(R.id.main_frame, readPostActivity);
-//                transaction.commit(); //fragment 상태 저장
                 Intent intent = new Intent(getActivity(), ReadPostActivity.class);
                 startActivity(intent);
 
