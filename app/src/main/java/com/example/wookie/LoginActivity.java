@@ -6,12 +6,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wookie.Group.GroupListActivity;
+import com.example.wookie.Models.Users;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -23,8 +29,11 @@ import kotlin.jvm.functions.Function2;
 public class LoginActivity extends AppCompatActivity {
 
     private String TAG = "LoginActivity";
-    private String userId;
+    private String userLoginId, userName, userProfile;
     private View loginBtn;
+    private FirebaseDatabase rootNode;
+    private DatabaseReference reference;
+    private ValueEventListener queryListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,14 +77,16 @@ public class LoginActivity extends AppCompatActivity {
             public Unit invoke(User user, Throwable throwable) {
                 if (user != null){//로그인 되면
 
-                    userId = String.valueOf(user.getId());
+                    userLoginId = String.valueOf(user.getId());
+                    userName = user.getKakaoAccount().getProfile().getNickname();
+                    userProfile = user.getKakaoAccount().getProfile().getProfileImageUrl();
 
-                    if(hasUserId(userId)){
+                    hasUserId(userLoginId, userName, userProfile);
 
-                    }
-                    //userProfile = user.getKakaoAccount().getProfile();
                     Intent intent = new Intent(LoginActivity.this, GroupListActivity.class);
-                    // intent.putExtra("id", user.getId());
+                    intent.putExtra("uid", userLoginId);
+                    intent.putExtra("uName", userName);
+                    intent.putExtra("uProfile", userProfile);
                     startActivity(intent);
                     finish();
                     Log.e(TAG, "성공");
@@ -88,14 +99,29 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private boolean hasUserId(String uid){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
+    private void hasUserId(String uid, String name, String profile){
+        rootNode = FirebaseDatabase.getInstance();
+        reference = rootNode.getReference("users");
 
-        myRef.setValue("Hello, World!");
+        Query queryID = reference.orderByChild("user_id").equalTo(uid);
 
+        queryID.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Log.e(TAG,"OK");
+                }
+                else {
+                    Users users = new Users(uid, name, profile);
+                    reference.child(uid).setValue(users);
+                }
+            }
 
-        return true;
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     // 로딩 스피너
 //    public void showProgressDialog(){

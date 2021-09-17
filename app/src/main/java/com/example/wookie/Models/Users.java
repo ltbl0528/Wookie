@@ -8,6 +8,12 @@ public class Users {
 
     }
 
+    public Users(String uid, String name, String profile){
+        this.userId = uid;
+        this.userName = name;
+        this.userProfile = profile;
+    }
+
     public String getUserId() {
         return userId;
     }
