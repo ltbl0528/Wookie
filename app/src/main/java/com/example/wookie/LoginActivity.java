@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wookie.Group.GroupListActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -21,6 +23,7 @@ import kotlin.jvm.functions.Function2;
 public class LoginActivity extends AppCompatActivity {
 
     private String TAG = "LoginActivity";
+    private String userId;
     private View loginBtn;
 
     @Override
@@ -64,7 +67,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public Unit invoke(User user, Throwable throwable) {
                 if (user != null){//로그인 되면
-                    //id = user.getId()
+
+                    userId = String.valueOf(user.getId());
+
+                    if(hasUserId(userId)){
+
+                    }
                     //userProfile = user.getKakaoAccount().getProfile();
                     Intent intent = new Intent(LoginActivity.this, GroupListActivity.class);
                     // intent.putExtra("id", user.getId());
@@ -78,6 +86,16 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
         });
+    }
+
+    private boolean hasUserId(String uid){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+
+        myRef.setValue("Hello, World!");
+
+
+        return true;
     }
     // 로딩 스피너
 //    public void showProgressDialog(){
