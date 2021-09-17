@@ -83,9 +83,9 @@ public class LoginActivity extends AppCompatActivity {
                     hasUserId(userLoginId, userName, userProfile);
 
                     Intent intent = new Intent(LoginActivity.this, GroupListActivity.class);
-                    intent.putExtra("uid", userLoginId);
-                    intent.putExtra("uName", userName);
-                    intent.putExtra("uProfile", userProfile);
+//                    intent.putExtra("uid", userLoginId);
+//                    intent.putExtra("uName", userName);
+//                    intent.putExtra("uProfile", userProfile);
                     startActivity(intent);
                     finish();
                     Log.e(TAG, "성공");
