@@ -5,11 +5,14 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".BottomNaviActivity">
+
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="659dp">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?android:attr/actionBarSize">
     </FrameLayout>
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:theme="@style/AppThemeMaterial"
         android:id="@+id/bottom_app_bar"
