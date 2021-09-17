@@ -3,25 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <fragment-->
-<!--        android:id="@+id/map_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-<!--    </fragment>-->
+    <RelativeLayout
+        android:id="@+id/map_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </RelativeLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginRight="1dp">
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="?android:colorBackground"
+
             app:cardCornerRadius="5dp"
             app:cardUseCompatPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
