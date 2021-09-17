@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     private View loginBtn;
     private FirebaseDatabase rootNode;
     private DatabaseReference reference;
-    private ValueEventListener queryListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
