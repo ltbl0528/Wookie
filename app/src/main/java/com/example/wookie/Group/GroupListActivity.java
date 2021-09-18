@@ -83,36 +83,43 @@ public class GroupListActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    String key = snapshot.getKey();
-                    Query query = reference.child(key).orderByChild("userId").equalTo(userLoginId);
-                    if (dataSnapshot.exists()) { // 해당 유저가 가입된 그룹방이 존재하면
-                        GroupMem groupMem = snapshot.getValue(GroupMem.class);
-                        String groupId = groupMem.getGroupId(); // 그룹방id를 가져와서
-                        Query query1 = database.getReference("group").orderByChild("groupId").equalTo(groupId);
-                        query1.addListenerForSingleValueEvent(new ValueEventListener() { // 그룹방의 정보를 가져온다
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    Group group = snapshot.getValue(Group.class);
-                                    groupList.add(group);
-                                }
-                                adapter.notifyDataSetChanged();
-                            }
+                if (dataSnapshot.exists()) {
+                    Query query = reference.orderByChild("userId").equalTo(userLoginId);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) { // 해당 유저가 가입된 그룹방이 존재하면
+                                GroupMem groupMem = dataSnapshot.getValue(GroupMem.class);
+                                String groupId = groupMem.getGroupId(); // 그룹방id를 가져와서
+                                Query query1 = database.getReference("group").orderByChild("groupId").equalTo(groupId);
+                                query1.addListenerForSingleValueEvent(new ValueEventListener() { // 그룹방의 정보를 가져온다
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            Group group = snapshot.getValue(Group.class);
+                                            groupList.add(group);
+                                        }
+                                        adapter.notifyDataSetChanged();
+                                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Log.e(TAG, error.toString());
-                            }
-                        });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.e(TAG, error.toString());
+                                    }
+                                });
 
-                    }
-                    else {
-                        Toast.makeText(GroupListActivity.this, "가입된 방 없음", Toast.LENGTH_LONG).show();
-                    }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e(TAG, error.toString());
+                        }
+                    });
+                } else {
+                    Toast.makeText(GroupListActivity.this, "가입된 방 없음", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, error.toString());
