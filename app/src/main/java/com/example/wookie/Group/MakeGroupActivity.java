@@ -19,7 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.wookie.LoginActivity;
 import com.example.wookie.Models.Group;
+import com.example.wookie.Models.GroupMem;
 import com.example.wookie.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -168,7 +170,10 @@ public class MakeGroupActivity extends AppCompatActivity {
                            public void onSuccess(Uri uri) {
                                Group group = new Group(id, adminId, name, pwd, uri.toString(), date);
                                reference.child(id).setValue(group);
+                               setMember(id, adminId);
                                Log.e(TAG, "생성완료!");
+                               Intent intent = new Intent(MakeGroupActivity.this, GroupListActivity.class);
+                               startActivity(intent);
                                finish();
                            }
                        });
@@ -180,6 +185,15 @@ public class MakeGroupActivity extends AppCompatActivity {
                         Toast.makeText(MakeGroupActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    // 그룹방 멤버 초기 설정
+    private void setMember(String groupId, String userId){
+        rootNode = FirebaseDatabase.getInstance();
+        reference = rootNode.getReference("groupMem");
+
+        GroupMem groupMem = new GroupMem(groupId, userId);
+        reference.push().setValue(groupMem);
     }
 
     private String getFileExtension(Uri uri){ //파일 확장자명 받아내기
