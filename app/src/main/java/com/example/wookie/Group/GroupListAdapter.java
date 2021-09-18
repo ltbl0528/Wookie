@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.BottomNaviActivity;
 import com.example.wookie.Models.Group;
 import com.example.wookie.R;
@@ -40,7 +42,8 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
-        Glide.with(context).load(groupList.get(position).getGroupImg()).into(holder.group_image);
+        Glide.with(context).load(groupList.get(position).getGroupImg())
+                .transform(new CenterCrop(),new RoundedCorners(25)).into(holder.group_image);
         holder.group_name.setText(groupList.get(position).getGroupName());
         holder.group_create_date.setText(groupList.get(position).getGroupDate());
         //TODO 참가 인원 수정
