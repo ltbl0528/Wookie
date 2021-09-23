@@ -43,8 +43,10 @@ import com.google.firebase.storage.UploadTask;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -137,7 +139,7 @@ public class WritePostActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 database = FirebaseDatabase.getInstance();
-                reference = database.getReference("Post");
+                reference = database.getReference("Post").child(groupId);
 
                 post.setPostId(reference.push().getKey());
                 post.setGroupId(groupId);
@@ -251,8 +253,12 @@ public class WritePostActivity extends AppCompatActivity{
     // 날짜+시간 반환
     private String getDate() {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
         String date = sdf.format(cal.getTime());
+//        //날짜를 long 타입으로 변환하는 방법
+//        Date curDate = sdf.parse(date, new ParsePosition(0));
+//        Long curDateLong = curDate.getTime();
+
         return date;
     }
 
