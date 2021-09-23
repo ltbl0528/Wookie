@@ -42,8 +42,7 @@ public class SelectPlaceActivity extends AppCompatActivity {
                 goodBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(SelectPlaceActivity.this, WritePostActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
             }

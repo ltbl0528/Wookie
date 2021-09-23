@@ -40,10 +40,13 @@ public class BottomNaviActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         writeBtn = findViewById(R.id.write);
 
+        final String groupId = getIntent().getStringExtra("groupId");
+
         writeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(BottomNaviActivity.this, WritePostActivity.class);
+                intent.putExtra("groupId", groupId);
                 startActivity(intent);
             }
         });

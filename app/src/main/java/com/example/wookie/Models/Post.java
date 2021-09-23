@@ -8,7 +8,13 @@ public class Post {
     private boolean isGallery;
     private int score;
 
-    public Post(){ }
+    public Post(){
+        this.placeId = "null";
+        this.postImg = "null";
+        this.isReview = false;
+        this.isGallery = false;
+        this.score = 0;
+    }
 
     public Post(String postId, String groupId, String userId, String placeId, String context, String postDate, String postImg, boolean isReview, boolean isGallery, int score) {
         this.postId = postId;
