@@ -37,6 +37,8 @@ import com.google.firebase.storage.UploadTask;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -133,7 +135,8 @@ public class MakeGroupActivity extends AppCompatActivity {
                                 Toast.makeText(MakeGroupActivity.this, "중복되는 그룹 이름이 존재합니다!", Toast.LENGTH_LONG).show();
                             } else {
                                 if (imageUri != null && validateNameAndPwd()){
-                                    imageUpload(groupId, String.valueOf(user.getId()), gName, gPwd, imageUri, groupDate);
+                                    String inviteCode = createInviteCode();
+                                    imageUpload(groupId, String.valueOf(user.getId()), gName, gPwd, imageUri, groupDate, inviteCode);
                                 }
                                 else{
                                     Toast.makeText(MakeGroupActivity.this, "필수 정보를 채워주세요!", Toast.LENGTH_LONG).show();
@@ -154,7 +157,15 @@ public class MakeGroupActivity extends AppCompatActivity {
             }
         });
     }
-    private void imageUpload(String id, String adminId, String name, String pwd, Uri imageUri, String date){ //이미지 업로드 & 데이터베이스 적재
+
+    // 초대코드 생성
+    private String createInviteCode() {
+        SecureRandom random = new SecureRandom();
+        String randomCode = new BigInteger(30, random).toString(32).toUpperCase(); //대문자+숫자 6글자 비밀번호 생성
+        return randomCode;
+    }
+
+    private void imageUpload(String id, String adminId, String name, String pwd, Uri imageUri, String date, String inviteCode){ //이미지 업로드 & 데이터베이스 적재
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -168,7 +179,7 @@ public class MakeGroupActivity extends AppCompatActivity {
                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                            @Override
                            public void onSuccess(Uri uri) {
-                               Group group = new Group(id, adminId, name, pwd, uri.toString(), date);
+                               Group group = new Group(id, adminId, name, pwd, uri.toString(), date, inviteCode);
                                reference.child(id).setValue(group);
                                setMember(id, adminId);
                                Log.e(TAG, "생성완료!");
