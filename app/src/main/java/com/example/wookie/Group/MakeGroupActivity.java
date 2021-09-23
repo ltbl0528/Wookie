@@ -51,7 +51,7 @@ public class MakeGroupActivity extends AppCompatActivity {
     private String TAG = "MakeGroupActivity";
 
     private ImageButton selectImgBtn;
-    private Button groupMakeBtn;
+    private Button groupMakeBtn, cancleBtn;
     private EditText groupName, groupPwd;
 
     private Uri imageUri;
@@ -70,6 +70,7 @@ public class MakeGroupActivity extends AppCompatActivity {
 
         selectImgBtn = findViewById(R.id.select_image_btn);
         groupMakeBtn = findViewById(R.id.group_make_btn);
+        cancleBtn = findViewById(R.id.cancel_button);
         groupName = findViewById(R.id.input_group_name);
         groupPwd = findViewById(R.id.input_group_pwd);
 
@@ -84,6 +85,13 @@ public class MakeGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 makeGroup();
+            }
+        });
+
+        cancleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }
