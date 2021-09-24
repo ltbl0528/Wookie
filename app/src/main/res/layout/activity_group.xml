@@ -32,6 +32,11 @@
             android:textSize="18dp"
             android:textAlignment="viewStart"
             android:layout_marginLeft="4dp"></Button>
+        <Button
+            android:id="@+id/test_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"></Button>
     </LinearLayout>
     <View
         android:layout_width="match_parent"

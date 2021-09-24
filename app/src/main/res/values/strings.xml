@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Wookie</string>
+    <string name="restapi_key">KakaoAK 0f0405f26aa5bdf8ae5d14903f0f7886</string>
 </resources>

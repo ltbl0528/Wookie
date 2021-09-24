@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.wookie.Map.MapTestActivity;
 import com.example.wookie.Models.Group;
 import com.example.wookie.Models.GroupMem;
 import com.example.wookie.R;
@@ -38,7 +39,7 @@ import kotlin.jvm.functions.Function2;
 public class GroupListActivity extends AppCompatActivity {
 
     private String TAG = "GroupListActivity";
-    private Button enterBtn, addGroupBtn, enterDialogBtn, codeMenuBtn, groupMakeMenuBtn, cancelBtn, cancelBtn2;
+    private Button enterBtn, addGroupBtn, enterDialogBtn, codeMenuBtn, groupMakeMenuBtn, cancelBtn, cancelBtn2, testBtn;
     private EditText groupCodeInput, groupPwdInput;
     private String userLoginId;
     private RecyclerView recyclerView;
@@ -56,6 +57,7 @@ public class GroupListActivity extends AppCompatActivity {
 
 //        enterBtn = findViewById(R.id.enter_btn);
         addGroupBtn = findViewById(R.id.add_group_btn);
+        testBtn = findViewById(R.id.test_btn);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -130,6 +132,14 @@ public class GroupListActivity extends AppCompatActivity {
 
         adapter = new GroupListAdapter(groupList, this);
         recyclerView.setAdapter(adapter); // 리사이클러뷰에 그룹 리스트 출력
+
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GroupListActivity.this, MapTestActivity.class);
+                startActivity(intent);
+            }
+        });
 
         addGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
