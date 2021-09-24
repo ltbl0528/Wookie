@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/round_border"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/post_edit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="글 수정"
+        android:textSize="18dp"
+        android:background="@android:color/transparent"></Button>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/group_code_menu_btn"
+        android:background="#A5A5A5"></View>
+    <Button
+        android:id="@+id/post_del_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="글 삭제"
+        android:textSize="18dp"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="5dp"></Button>
+
+</LinearLayout>
