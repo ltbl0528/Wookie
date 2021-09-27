@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.BottomNaviActivity;
+import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Post;
 import com.example.wookie.R;
 import com.google.firebase.database.DataSnapshot;
@@ -42,7 +43,7 @@ public class ReadPostActivity extends AppCompatActivity {
     private String TAG = "ReadPostActivity";
     private static final int BAD=1, GOOD=2, RECOMMEND=3;
     private ImageView userImage, postImage1, scoreImage;
-    private TextView userName, postDate, postContent;
+    private TextView userName, postDate, postContent, placeNameTxt, placeAddressTxt;
     private LinearLayout placeReview;
     private Button editDelBtn;
     private Button backBtn;
@@ -154,6 +155,22 @@ public class ReadPostActivity extends AppCompatActivity {
                                 .transform(new CenterCrop(),new RoundedCorners(25)).into(postImage1);
                     }
                     if(post.isReview()){ // 글 장소 리뷰 설정
+                        placeNameTxt = findViewById(R.id.placeName_txt);
+                        placeAddressTxt = findViewById(R.id.placeAddress_txt);
+                        DatabaseReference placeRef = database.getReference("Place").child(groupId).child(post.getPlaceId());
+                        placeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Document place = snapshot.getValue(Document.class);
+                                placeNameTxt.setText(place.getPlaceName());
+                                placeAddressTxt.setText(place.getRoadAddressName());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                         placeReview.setVisibility(View.VISIBLE);
                         switch (post.getScore()){
                             case BAD:
@@ -218,4 +235,12 @@ public class ReadPostActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        final String groupId = getIntent().getStringExtra("groupId");
+        Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
+        intent.putExtra("groupId", groupId);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -61,7 +61,7 @@ public class WritePostActivity extends AppCompatActivity{
     private CheckBox addToGallery;
 
     private FirebaseDatabase database;
-    private DatabaseReference reference;
+    private DatabaseReference reference, placeRef;
     private FirebaseStorage storage;
     private StorageReference storageReference;
 
@@ -69,12 +69,13 @@ public class WritePostActivity extends AppCompatActivity{
     private Uri imageUri;
     private String userLoginId;
     private Post post = new Post(); // 생성과 동시에 초기화
+    private Document placeInfo = new Document();
 
     private ConstraintLayout placeReview;
     private ImageView deletePlaceBtn;
     private Dialog scoreDialog;
     public static Context mContext;
-    public String passEditText, passGroupId;
+    public String passEditText, passGroupId, placeID;
     public Uri passUri;
     private ImageView scoreImg;
 
@@ -108,7 +109,7 @@ public class WritePostActivity extends AppCompatActivity{
         // 해당 그룹방id 받아오기
         final String groupId = getIntent().getStringExtra("groupId");
         if(getIntent().getParcelableExtra("placeInfo") != null){
-            final Document placeInfo = getIntent().getParcelableExtra("placeInfo");
+            placeInfo = getIntent().getParcelableExtra("placeInfo");
             final int score = getIntent().getIntExtra("score",0);
             final boolean isReview = getIntent().getBooleanExtra("isReview", false);
             final String passedText = getIntent().getStringExtra("editTxt");
@@ -196,6 +197,7 @@ public class WritePostActivity extends AppCompatActivity{
             public void onClick(View v) {
                 database = FirebaseDatabase.getInstance();
                 reference = database.getReference("Post").child(groupId);
+                placeRef = database.getReference("Place").child(groupId);
 
                 post.setPostId(reference.push().getKey());
                 post.setGroupId(groupId);
@@ -212,7 +214,15 @@ public class WritePostActivity extends AppCompatActivity{
                     imageUpload(groupId, post.getPostId(), imageUri);
                 }
                 else {
-                    reference.child(post.getPostId()).setValue(post);
+                    if(post.isReview() == true){
+                        placeID = placeInfo.getId();
+                        placeRef.child(placeID).setValue(placeInfo);
+                        post.setPlaceId(placeID);
+                        reference.child(post.getPostId()).setValue(post);
+                    }
+                    else{
+                        reference.child(post.getPostId()).setValue(post);
+                    }
                     //Toast.makeText(WritePostActivity.this, "게시글 업로드", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
                     intent.putExtra("groupId", groupId);
@@ -339,7 +349,15 @@ public class WritePostActivity extends AppCompatActivity{
                             public void onSuccess(Uri uri) {
                                 post.setPostImg(uri.toString());
                                 //Toast.makeText(WritePostActivity.this, "사진,게시글 업로드 ", Toast.LENGTH_SHORT).show();
-                                reference.child(postId).setValue(post);
+                                if(post.isReview() == true){
+                                    placeID = placeInfo.getId();
+                                    placeRef.child(placeID).setValue(placeInfo);
+                                    post.setPlaceId(placeID);
+                                    reference.child(post.getPostId()).setValue(post);
+                                }
+                                else{
+                                    reference.child(postId).setValue(post);
+                                }
                                 Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
                                 intent.putExtra("groupId", groupId);
                                 startActivity(intent);

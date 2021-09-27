@@ -15,11 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.wookie.BottomNaviActivity;
+import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Post;
 import com.example.wookie.Post.ReadPostActivity;
 import com.example.wookie.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -82,6 +85,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // 리뷰 장소, 평점 설정
         if(postList.get(position).isReview()){
+            DatabaseReference placeRef = database.getReference("Place").child(postList.get(position).getGroupId()).child(postList.get(position).getPlaceId());
+            placeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Document place = snapshot.getValue(Document.class);
+                    holder.placeNameTxt.setText(place.getPlaceName());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             holder.placeReview.setVisibility(View.VISIBLE);
             switch (postList.get(position).getScore()){
                 case BAD:
@@ -139,7 +155,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage, postImage1, scoreImage;
         ConstraintLayout placeReview;
-        TextView userName, diffTime, postContent, placeName, countComment;
+        TextView userName, diffTime, postContent, placeName, countComment, placeNameTxt;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -152,6 +168,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             this.placeName = itemView.findViewById(R.id.place_name);
             this.scoreImage = itemView.findViewById(R.id.score_image);
             this.countComment = itemView.findViewById(R.id.count_comment);
+            this.placeNameTxt = itemView.findViewById(R.id.placeName_txt);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +181,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     intent.putExtra("groupId", groupId);
                     intent.putExtra("postId", postId);
                     itemView.getContext().startActivity(intent);
+                    ((BottomNaviActivity)itemView.getContext()).finish();
                 }
             });
         }
