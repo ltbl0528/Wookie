@@ -2,6 +2,7 @@ package com.example.wookie.Group;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +18,25 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.BottomNaviActivity;
 import com.example.wookie.Models.Group;
+import com.example.wookie.Models.GroupMem;
 import com.example.wookie.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
 
+    private String TAG = "GroupListAdapter";
     private ArrayList<Group> groupList;
     private Context context;
+
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     public GroupListAdapter(ArrayList<Group> groupList, Context context){
         this.groupList = groupList;
@@ -46,8 +58,29 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
                 .transform(new CenterCrop(),new RoundedCorners(25)).into(holder.group_image);
         holder.group_name.setText(groupList.get(position).getGroupName());
         holder.group_create_date.setText(groupList.get(position).getGroupDate());
-        //TODO 참가 인원 수정
-        holder.member_count.setText("2명 참가");
+
+        String groupId = groupList.get(position).getGroupId();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("groupMem");
+
+        Query query = reference.orderByChild("groupId").equalTo(groupId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int memCount=0;
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    GroupMem groupMem = snapshot.getValue(GroupMem.class);
+                    memCount++;
+                }
+                holder.member_count.setText( memCount+"명 참가");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, error.toString());
+            }
+        });
+
     }
 
     @Override
