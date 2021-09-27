@@ -2,6 +2,7 @@ package com.example.wookie.Post;
 
 import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.BottomNaviActivity;
+import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Post;
 import com.example.wookie.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -51,7 +53,7 @@ public class WritePostActivity extends AppCompatActivity{
 
     private String TAG = "WritePostActivity";
     private Button cancelBtn, selectImgBtn, selectPlaceBtn;
-    private TextView postSubmitBtn;
+    private TextView postSubmitBtn, placeName;
     private EditText postEditTxt;
     private RelativeLayout postImgLayout;
     private ImageView postImg1;
@@ -71,7 +73,9 @@ public class WritePostActivity extends AppCompatActivity{
     private ConstraintLayout placeReview;
     private ImageView deletePlaceBtn;
     private Dialog scoreDialog;
-    private Button cancelDialogBtn, badBtn, goodBtn, recommendBtn;
+    public static Context mContext;
+    public String passEditText, passGroupId;
+    public Uri passUri;
     private ImageView scoreImg;
 
     @Override
@@ -90,6 +94,7 @@ public class WritePostActivity extends AppCompatActivity{
         addToGallery = findViewById(R.id.add_to_gallery);
 
         placeReview = findViewById(R.id.placeReview_layout);
+        placeName = findViewById(R.id.placeName_txt);
         deletePlaceBtn = findViewById(R.id.delete_place_btn);
         scoreDialog= new Dialog(WritePostActivity.this);
         scoreDialog.setContentView(R.layout.dialog_score);
@@ -97,7 +102,59 @@ public class WritePostActivity extends AppCompatActivity{
 
 
         // 해당 그룹방id 받아오기
+        mContext = this;
+
+
+        // 해당 그룹방id 받아오기
         final String groupId = getIntent().getStringExtra("groupId");
+        if(getIntent().getParcelableExtra("placeInfo") != null){
+            final Document placeInfo = getIntent().getParcelableExtra("placeInfo");
+            final int score = getIntent().getIntExtra("score",0);
+            final boolean isReview = getIntent().getBooleanExtra("isReview", false);
+            final String passedText = getIntent().getStringExtra("editTxt");
+            final Uri passedUri = getIntent().getParcelableExtra("imgUri");
+
+            if(passedText != null){
+                postEditTxt.setText(passedText);
+                postSubmitBtn.setEnabled(true);
+                postSubmitBtn.setTextColor(Color.BLUE);
+            }
+
+            if(passedUri != null){
+                postImg1.setVisibility(View.VISIBLE);
+                Glide.with(this).load(passedUri).transform(new CenterCrop(),new RoundedCorners(25)).into(postImg1);
+                // 앨범추가 버튼 띄우기
+                addToGallery.setVisibility(View.VISIBLE);
+            }
+
+
+            if(placeInfo.getPlaceName() != null){
+                placeName.setText(placeInfo.getPlaceName());
+                switch (score){
+                    case 1:
+                        scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
+                        placeReview.setVisibility(View.VISIBLE);
+                        post.setScore(score);
+                        post.setReview(isReview);
+                        break;
+                    case 2:
+                        scoreImg.setImageDrawable(getDrawable(R.drawable.good));
+                        placeReview.setVisibility(View.VISIBLE);
+                        post.setScore(score);
+                        post.setReview(isReview);
+                        break;
+                    case 3:
+                        scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
+                        placeReview.setVisibility(View.VISIBLE);
+                        post.setScore(score);
+                        post.setReview(isReview);
+                        break;
+                    default:
+                        break;
+
+                }
+            }
+        }
 
         // 현재 사용자 id 받아오기
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
@@ -122,7 +179,7 @@ public class WritePostActivity extends AppCompatActivity{
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length()>0){ // 작성된 글이 있을시 게시 버튼 활성화
+                if (s.length()>0 && postEditTxt.getText().toString().trim() != null){ // 작성된 글이 있을시 게시 버튼 활성화
                     postSubmitBtn.setEnabled(true);
                     postSubmitBtn.setTextColor(Color.BLUE);
 
@@ -199,56 +256,15 @@ public class WritePostActivity extends AppCompatActivity{
         selectPlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scoreDialog.show();
-                cancelDialogBtn = scoreDialog.findViewById(R.id.cancel_btn);
-                badBtn = scoreDialog.findViewById(R.id.bad_btn);
-                goodBtn = scoreDialog.findViewById(R.id.good_btn);
-                recommendBtn = scoreDialog.findViewById(R.id.recommend_btn);
-
-                //취소버튼 클릭 시
-                cancelDialogBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        scoreDialog.dismiss();
-                    }
-                });
-                // 평가버튼 '나쁨' 선택
-                badBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // bad 이미지로 설정한 후 작성 중인 글에 띄움
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(1);
-                        post.setReview(true);
-                        scoreDialog.dismiss();
-                    }
-                });
-                // 평가버튼 '좋음' 선택
-                goodBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.good));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(2);
-                        post.setReview(true);
-                        scoreDialog.dismiss();
-                    }
-                });
-                // 평가버튼 '추천' 선택
-                recommendBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(3);
-                        post.setReview(true);
-                        scoreDialog.dismiss();
-                    }
-                });
-
-//                Intent intent = new Intent(WritePostActivity.this, SelectPlaceActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(WritePostActivity.this, SelectPlaceActivity.class);
+                if(postImg1.getVisibility() == View.VISIBLE){
+                    passUri = imageUri;
+                }
+                if(!postEditTxt.getText().toString().trim().isEmpty()){
+                    passEditText = postEditTxt.getText().toString();
+                }
+                passGroupId = groupId;
+                startActivity(intent);
             }
         });
 

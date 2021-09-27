@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.wookie.Models.CategoryResult;
 import com.example.wookie.Models.Document;
+import com.example.wookie.Post.LocationAdapter;
 import com.example.wookie.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.shashank.sony.fancytoastlib.FancyToast;
