@@ -28,8 +28,8 @@ public class ShowMapActivity extends AppCompatActivity {
         placeInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ShowMapActivity.this, PlaceInfoActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ShowMapActivity.this, PlaceInfoActivity.class);
+//                startActivity(intent);
             }
         });
     }

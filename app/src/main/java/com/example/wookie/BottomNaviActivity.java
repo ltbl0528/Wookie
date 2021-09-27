@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -39,6 +42,8 @@ public class BottomNaviActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         writeBtn = findViewById(R.id.write);
+        FrameLayout mf = findViewById(R.id.main_frame);
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mf.getLayoutParams();
 
         final String groupId = getIntent().getStringExtra("groupId");
 
@@ -64,6 +69,8 @@ public class BottomNaviActivity extends AppCompatActivity {
                         break;
                     case R.id.map:
                         setFrag(1);
+                        layoutParams.bottomMargin = 0;
+                        mf.setLayoutParams(layoutParams);
                         break;
                     case R.id.placeholder:
                         setFrag(2);

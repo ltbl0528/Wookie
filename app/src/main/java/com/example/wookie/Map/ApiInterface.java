@@ -36,7 +36,6 @@ public interface ApiInterface {
             @Query("y") String y,
             @Query("size") int size
     );
-
     //주소로 검색 (아직안쓰는중)
 //    @GET("v2/local/search/address.json")
 //    Call<AddressSearch> getSearchAddress(
