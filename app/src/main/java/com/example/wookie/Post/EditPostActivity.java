@@ -28,13 +28,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.example.wookie.BottomNaviActivity;
 import com.example.wookie.Models.Post;
 import com.example.wookie.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -47,9 +49,10 @@ import java.util.Calendar;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
-public class WritePostActivity extends AppCompatActivity{
+public class EditPostActivity extends AppCompatActivity {
 
-    private String TAG = "WritePostActivity";
+    private String TAG = "EditPostActivity";
+    private TextView topBarTxt;
     private Button cancelBtn, selectImgBtn, selectPlaceBtn;
     private TextView postSubmitBtn;
     private EditText postEditTxt;
@@ -66,19 +69,24 @@ public class WritePostActivity extends AppCompatActivity{
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
     private String userLoginId;
-    private Post post = new Post(); // 생성과 동시에 초기화
+    private Post post;
 
+
+    private static final int BAD=1, GOOD=2, RECOMMEND=3;
     private ConstraintLayout placeReview;
     private ImageView deletePlaceBtn;
     private Dialog scoreDialog;
     private Button cancelDialogBtn, badBtn, goodBtn, recommendBtn;
-    private ImageView scoreImg;
+    private ImageView scoreImg1;
+
+    private boolean isImg=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_write);
 
+        topBarTxt = findViewById(R.id.topBar_txt);
         cancelBtn = findViewById(R.id.cancel_btn);
         postSubmitBtn = findViewById(R.id.post_submit_btn);
         selectImgBtn = findViewById(R.id.select_image_btn);
@@ -91,13 +99,14 @@ public class WritePostActivity extends AppCompatActivity{
 
         placeReview = findViewById(R.id.placeReview_layout);
         deletePlaceBtn = findViewById(R.id.delete_place_btn);
-        scoreDialog= new Dialog(WritePostActivity.this);
+        scoreDialog= new Dialog(EditPostActivity.this);
         scoreDialog.setContentView(R.layout.dialog_score);
-        scoreImg = findViewById(R.id.score_image);
+        scoreImg1 = findViewById(R.id.score_image);
 
 
-        // 해당 그룹방id 받아오기
+        // ReadPostActivity에서 받아온 값
         final String groupId = getIntent().getStringExtra("groupId");
+        final String postId = getIntent().getStringExtra("postId");
 
         // 현재 사용자 id 받아오기
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
@@ -112,6 +121,10 @@ public class WritePostActivity extends AppCompatActivity{
                 return null;
             }
         });
+
+        topBarTxt.setText("글수정");
+        postSubmitBtn.setText("수정");
+        setPost(groupId, postId);
 
         postEditTxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -138,27 +151,31 @@ public class WritePostActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 database = FirebaseDatabase.getInstance();
-                reference = database.getReference("Post").child(groupId);
+                reference = database.getReference("Post").child(groupId).child(postId);
 
-                post.setPostId(reference.push().getKey());
-                post.setGroupId(groupId);
-                post.setUserId(userLoginId);
+//                post.setPostId(postId);
+//                post.setGroupId(groupId);
+//                post.setUserId(userLoginId);
                 post.setContext(postEditTxt.getText().toString());
-                post.setPostDate(getDate());
+//                post.setPostDate(getDate());
 
                 if(addToGallery.isChecked()){
                     post.setGallery(true);
                 }
+                else{
+                    post.setGallery(false);
+                }
 
                 // 이미지 등록되어 있을 경우 Storage에 업로드 후 db에 저장
-                if(postImgLayout.getVisibility() == View.VISIBLE){
-                    imageUpload(groupId, post.getPostId(), imageUri);
+                if(postImgLayout.getVisibility() == View.VISIBLE && isImg==false){
+                    imageUpload(groupId, postId, imageUri);
                 }
                 else {
-                    reference.child(post.getPostId()).setValue(post);
-                    //Toast.makeText(WritePostActivity.this, "게시글 업로드", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
+                    reference.setValue(post);
+                    //Toast.makeText(WritePostActivity.this, "게시글 수정", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), ReadPostActivity.class);
                     intent.putExtra("groupId", groupId);
+                    intent.putExtra("postId", postId);
                     startActivity(intent);
                     finish();
                 }
@@ -175,7 +192,6 @@ public class WritePostActivity extends AppCompatActivity{
         });
 
         // 사진추가 버튼
-        //TODO: 사진 최대 4개 올릴 수 있게 수정 (레이아웃도 수정 필요)
         selectImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,15 +203,14 @@ public class WritePostActivity extends AppCompatActivity{
         delPostImg1Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                post.setGallery(false);
                 post.setPostImg("null");
                 postImgLayout.setVisibility(View.GONE);
-                post.setGallery(false);
-                addToGallery.setVisibility(View.GONE);
+                isImg=false;
             }
         });
 
         // 장소추가 버튼
-        // TODO: 카카오맵 연동 필요 ( 현재 임의로 장소 평가 다이얼로그 띄움)
         selectPlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -217,7 +232,7 @@ public class WritePostActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View view) {
                         // bad 이미지로 설정한 후 작성 중인 글에 띄움
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
+                        scoreImg1.setImageDrawable(getDrawable(R.drawable.bad));
                         placeReview.setVisibility(View.VISIBLE);
                         post.setScore(1);
                         post.setReview(true);
@@ -228,7 +243,7 @@ public class WritePostActivity extends AppCompatActivity{
                 goodBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.good));
+                        scoreImg1.setImageDrawable(getDrawable(R.drawable.good));
                         placeReview.setVisibility(View.VISIBLE);
                         post.setScore(2);
                         post.setReview(true);
@@ -239,7 +254,7 @@ public class WritePostActivity extends AppCompatActivity{
                 recommendBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
+                        scoreImg1.setImageDrawable(getDrawable(R.drawable.recommend));
                         placeReview.setVisibility(View.VISIBLE);
                         post.setScore(3);
                         post.setReview(true);
@@ -260,6 +275,51 @@ public class WritePostActivity extends AppCompatActivity{
                 post.setScore(0);
                 post.setReview(false);
                 placeReview.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    // 작성글 설정
+    private void setPost(String groupId, String postId) {
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Post").child(groupId).child(postId);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    post = dataSnapshot.getValue(Post.class);
+
+                    postEditTxt.setText(post.getContext());
+                    if(!(post.getPostImg().equals("null"))){ // 글 이미지 설정
+                        isImg = true;
+                        postImgLayout.setVisibility(View.VISIBLE);
+                        Glide.with(postImg1).load(post.getPostImg()).transform(new CenterCrop(),new RoundedCorners(25)).into(postImg1);
+                        addToGallery.setVisibility(View.VISIBLE);
+                    }
+                    if(post.isReview()){ // 글 장소 리뷰 설정
+                        placeReview.setVisibility(View.VISIBLE);
+                        switch (post.getScore()){
+                            case BAD:
+                                scoreImg1.setImageDrawable(getDrawable(R.drawable.bad));
+                                break;
+                            case GOOD:
+                                scoreImg1.setImageDrawable(getDrawable(R.drawable.good));
+                                break;
+                            case RECOMMEND:
+                                scoreImg1.setImageDrawable(getDrawable(R.drawable.recommend));
+                                break;
+                        }
+                    }
+
+                    if(post.isGallery()){
+                        addToGallery.setChecked(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "setPost:"+error.toString());
             }
         });
     }
@@ -323,9 +383,10 @@ public class WritePostActivity extends AppCompatActivity{
                             public void onSuccess(Uri uri) {
                                 post.setPostImg(uri.toString());
                                 //Toast.makeText(WritePostActivity.this, "사진,게시글 업로드 ", Toast.LENGTH_SHORT).show();
-                                reference.child(postId).setValue(post);
-                                Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
+                                reference.setValue(post);
+                                Intent intent = new Intent(getApplicationContext(), ReadPostActivity.class);
                                 intent.putExtra("groupId", groupId);
+                                intent.putExtra("postId", postId);
                                 startActivity(intent);
                                 finish();
                             }
@@ -335,11 +396,9 @@ public class WritePostActivity extends AppCompatActivity{
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(WritePostActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditPostActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
-
 
 }

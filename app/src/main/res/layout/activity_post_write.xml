@@ -21,6 +21,7 @@
                 app:layout_constraintTop_toTopOf="parent">
             </Button>
             <TextView
+                android:id="@+id/topBar_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -62,7 +63,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="5dp"
             android:orientation="vertical">
-
             <EditText
                 android:id="@+id/post_edit_txt"
                 android:layout_width="match_parent"
@@ -71,13 +71,27 @@
                 android:hint="글을 작성해주세요."
                 android:textSize="20dp"></EditText>
 
-            <ImageView
-                android:id="@+id/post_image1"
+            <RelativeLayout
+                android:id="@+id/post_image_layout"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/logo"
-                android:visibility="gone"></ImageView>
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:visibility="gone">
+                <ImageView
+                    android:id="@+id/post_image1"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/logo"
+                    android:layout_centerInParent="true"></ImageView>
+                <ImageButton
+                    android:id="@+id/delete_post_image1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_baseline_cancel_24"></ImageButton>
+            </RelativeLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/placeReview_layout"
@@ -86,7 +100,6 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:visibility="gone">
-
                 <ImageView
                     android:id="@id/marker_image"
                     android:layout_width="25dp"
@@ -94,7 +107,6 @@
                     android:src="@drawable/map"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"></ImageView>
-
                 <TextView
                     android:id="@+id/placeName_txt"
                     android:layout_width="wrap_content"
@@ -103,7 +115,6 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/marker_image"
                     app:layout_constraintTop_toTopOf="parent"></TextView>
-
                 <ImageView
                     android:id="@+id/score_image"
                     android:layout_width="25dp"
@@ -111,7 +122,6 @@
                     android:src="@drawable/bad"
                     app:layout_constraintStart_toEndOf="@id/placeName_txt"
                     app:layout_constraintTop_toTopOf="parent"></ImageView>
-
                 <ImageView
                     android:id="@+id/delete_place_btn"
                     android:layout_width="18dp"
@@ -121,7 +131,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"></ImageView>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
