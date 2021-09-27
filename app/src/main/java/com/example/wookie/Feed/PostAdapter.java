@@ -32,6 +32,7 @@ import java.util.Date;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private ArrayList<Post> postList;
     private Context context;
+    private static final int BAD=1, GOOD=2, RECOMMEND=3;
 
     public PostAdapter(ArrayList<Post> postList, Context context){
         this.postList = postList;
@@ -71,16 +72,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         // 글 작성 경과 시간 설정, 글 내용 설정
         holder.diffTime.setText(getDiffTime(postList.get(position).getPostDate()));
         holder.postContent.setText(postList.get(position).getContext());
+
         // 이미지 설정
         if(!(postList.get(position).getPostImg().equals("null"))){
             holder.postImage1.setVisibility(View.VISIBLE);
             Glide.with(context).load(postList.get(position).getPostImg())
                     .transform(new CenterCrop(),new RoundedCorners(25)).into(holder.postImage1);
         }
-        // 리뷰 장소 설정
+
+        // 리뷰 장소, 평점 설정
         if(postList.get(position).isReview()){
             holder.placeReview.setVisibility(View.VISIBLE);
+            switch (postList.get(position).getScore()){
+                case BAD:
+                    holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.bad));
+                    break;
+                case GOOD:
+                    holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.good));
+                    break;
+                case RECOMMEND:
+                    holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.recommend));
+                    break;
+            }
         }
+
         // 댓글 개수 설정
        holder.countComment.setText("댓글1개");
     }
@@ -122,7 +137,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        ImageView userImage, postImage1;
+        ImageView userImage, postImage1, scoreImage;
         ConstraintLayout placeReview;
         TextView userName, diffTime, postContent, placeName, countComment;
 
@@ -135,6 +150,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             this.postContent = itemView.findViewById(R.id.post_content);
             this.placeReview = itemView.findViewById(R.id.placeReview_layout);
             this.placeName = itemView.findViewById(R.id.place_name);
+            this.scoreImage = itemView.findViewById(R.id.score_image);
             this.countComment = itemView.findViewById(R.id.count_comment);
 
 
