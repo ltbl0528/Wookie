@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -36,55 +36,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="#A5A5A5"
-        android:layout_marginTop="60dp"></View>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="63dp"
-        >
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/map_recyclerview"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"/>
-        <RelativeLayout
-            android:id="@+id/map_mv_mapcontainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            />
-    </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabCustomSize="50dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="15sp"
-        android:layout_marginBottom="160dp"
-        android:src="@drawable/ic_push_pin"
-        app:backgroundTint="#ffffff"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabCustomSize="50dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="15sp"
-        android:layout_marginBottom="90dp"
-        android:src="@drawable/ic_my_location"
-        app:backgroundTint="#ffffff"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        />
-    <include
-        layout="@layout/view_loader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</FrameLayout>
+        android:layout_marginBottom="15dp"
+        android:background="#A5A5A5"></View>
+</LinearLayout>
