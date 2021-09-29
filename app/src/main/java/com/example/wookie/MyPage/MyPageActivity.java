@@ -88,11 +88,11 @@ public class MyPageActivity extends Fragment {
             @Override
             public void onClick(View view) {
                 //보낼 데이터 있을 경우 주석 풀어서 쓰기
-                //Bundle bundle = new Bundle();
-                //bundle.putString("fromFeedActivity", "여기에는 글 ID 같은 거");
+                Bundle bundle = new Bundle();
+                bundle.putString("groupId", groupId);
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 MyMapActivity myMapActivity = new MyMapActivity();
-                //readPostActivity.setArguments(bundle);
+                myMapActivity.setArguments(bundle);
                 transaction.replace(R.id.main_frame, myMapActivity);
                 transaction.commit(); //fragment 상태 저장
             }

@@ -77,7 +77,7 @@ public class WritePostActivity extends AppCompatActivity{
     private Dialog scoreDialog;
     public static Context mContext;
     public String passEditText, passGroupId, placeID;
-    public Uri passUri;
+    public Uri passUri, passedUri;
     private ImageView scoreImg;
 
     @Override
@@ -114,7 +114,7 @@ public class WritePostActivity extends AppCompatActivity{
             final int score = getIntent().getIntExtra("score",0);
             final boolean isReview = getIntent().getBooleanExtra("isReview", false);
             final String passedText = getIntent().getStringExtra("editTxt");
-            final Uri passedUri = getIntent().getParcelableExtra("imgUri");
+            passedUri = getIntent().getParcelableExtra("imgUri");
 
             if(passedText != null){
                 postEditTxt.setText(passedText);
@@ -123,6 +123,7 @@ public class WritePostActivity extends AppCompatActivity{
             }
 
             if(passedUri != null){
+                imageUri = passedUri;
                 postImgLayout.setVisibility(View.VISIBLE);
                 Glide.with(this).load(passedUri).transform(new CenterCrop(),new RoundedCorners(25)).into(postImg1);
                 // 앨범추가 버튼 띄우기
@@ -326,11 +327,11 @@ public class WritePostActivity extends AppCompatActivity{
         }
     }
 
-    private String getFileExtension(Uri uri){ //파일 확장자명 받아내기
-        ContentResolver cr = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cr.getType(uri));
-    }
+//    private String getFileExtension(Uri uri){ //파일 확장자명 받아내기
+//        ContentResolver cr = getContentResolver();
+//        MimeTypeMap mime = MimeTypeMap.getSingleton();
+//        return mime.getExtensionFromMimeType(cr.getType(uri));
+//    }
 
     // 이미지 업로드 + 작성글 db에 저장
     private void imageUpload(String groupId, String postId, Uri imageUri){
@@ -338,7 +339,7 @@ public class WritePostActivity extends AppCompatActivity{
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        StorageReference fileRef = storageReference.child("postImg/" + groupId + "/" + postId + "." + getFileExtension(imageUri));
+        StorageReference fileRef = storageReference.child("postImg/" + groupId + "/" + postId);
 
         fileRef.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

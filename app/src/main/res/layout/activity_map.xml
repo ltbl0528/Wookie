@@ -46,29 +46,16 @@
             android:orientation="vertical"
             />
     </LinearLayout>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="15sp"
-        android:layout_marginBottom="230dp"
-        android:src="@drawable/ic_baseline_search_24"
-        android:visibility="invisible"
-        app:backgroundTint="#ffffff"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:fabCustomSize="50dp"
         android:layout_gravity="bottom|end"
         android:layout_marginRight="15sp"
         android:layout_marginBottom="160dp"
-        android:src="@drawable/ic_baseline_search_24"
-        android:visibility="invisible"
+        android:src="@drawable/ic_push_pin"
         app:backgroundTint="#ffffff"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
@@ -77,34 +64,14 @@
         android:id="@+id/fab1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:fabCustomSize="50dp"
         android:layout_gravity="bottom|end"
         android:layout_marginRight="15sp"
         android:layout_marginBottom="90dp"
-        android:src="@drawable/ic_baseline_search_24"
-        android:visibility="invisible"
+        android:src="@drawable/ic_my_location"
         app:backgroundTint="#ffffff"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:backgroundTint="@color/colorPrimary"
-        android:src="@drawable/ic_baseline_add_24"
-        android:layout_marginBottom="65dp"
-        android:layout_marginRight="10sp"
-        />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_stop_tracking"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:layout_margin="15sp"
-        android:src="@drawable/close"
-        android:layout_gravity="bottom|start"
         />
     <include
         layout="@layout/view_loader"
