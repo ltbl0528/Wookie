@@ -80,6 +80,8 @@ public class BottomNaviActivity extends AppCompatActivity {
                         break;
                     case R.id.mypage:
                         setFrag(4);
+                        layoutParams.bottomMargin = 0;
+                        mf.setLayoutParams(layoutParams);
                         break;
                 }
                 return true;

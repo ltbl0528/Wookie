@@ -1,8 +1,8 @@
 package com.example.wookie.Map;
 
-import android.content.DialogInterface;
+
 import android.content.Intent;
-import android.graphics.Color;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,11 +23,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crowdfire.cfalertdialog.CFAlertDialog;
+
 import com.example.wookie.Models.CategoryResult;
 import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Post;
-import com.example.wookie.Map.MapLocaAdapter;
+
 import com.example.wookie.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -39,8 +39,6 @@ import com.shashank.sony.fancytoastlib.FancyToast;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import net.daum.android.map.MapViewEventListener;
-import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -59,9 +57,7 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
     MapView mMapView;
     ViewGroup mMapViewContainer;
     EditText mSearchEdit;
-    private Animation fab_open, fab_close;
-    private Boolean isFabOpen = false;
-    private FloatingActionButton fab, fab1, fab2, fab3, stopTrackingFab;
+    private FloatingActionButton fab1, fab2;
     RelativeLayout mLoaderLayout;
     RecyclerView recyclerView;
 
@@ -81,7 +77,6 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
 
     ArrayList<Document> documentArrayList = new ArrayList<>(); //지역명 검색 결과 리스트
     ArrayList<Document> reviewArrayList = new ArrayList<>();
-    ArrayList<Document> checkList = new ArrayList<>();
     ArrayList<Post> postList = new ArrayList<>();//리뷰 장소 리스트
 
 
@@ -102,13 +97,8 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
     private void initView(View view) {
         //binding
         mSearchEdit = view.findViewById(R.id.search_txt);
-        fab_open = AnimationUtils.loadAnimation(view.getContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(view.getContext(), R.anim.fab_close);
-        fab = view.findViewById(R.id.fab);
         fab1 = view.findViewById(R.id.fab1);
         fab2 = view.findViewById(R.id.fab2);
-        fab3 = view.findViewById(R.id.fab3);
-        stopTrackingFab = view.findViewById(R.id.fab_stop_tracking);
         mLoaderLayout = view.findViewById(R.id.loaderLayout);
         mMapView = new MapView(view.getContext());
         mMapViewContainer = view.findViewById(R.id.map_mv_mapcontainer);
@@ -126,11 +116,8 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         mMapView.setOpenAPIKeyAuthenticationResultListener(this);
 
         //버튼리스너
-        fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
-        fab3.setOnClickListener(this);
-        stopTrackingFab.setOnClickListener(this);
 
         Toast.makeText(view.getContext(), "맵을 로딩중입니다", Toast.LENGTH_SHORT).show();
 
@@ -211,53 +198,22 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.fab:
-                FancyToast.makeText(v.getContext(), "1번 버튼: 검색좌표 기준으로 1km 검색" +
-                        "\n2번 버튼: 현재위치 기준으로 주변환경 검색" +
-                        "\n3번 버튼: 현재위치 추적 및 업데이트", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
-                anim();
-                break;
-            case R.id.fab1: //아래버튼에서부터 1~3임
+            case R.id.fab2: //아래버튼에서부터 1~3임
                 FancyToast.makeText(v.getContext(), "현재위치 추적 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 isTrackingMode = true;
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
-                anim();
-                stopTrackingFab.setVisibility(View.VISIBLE);
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
-            case R.id.fab2:
+            case R.id.fab1:
                 isTrackingMode = false;
                 FancyToast.makeText(v.getContext(), "현재위치기준 1km 검색 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
-                stopTrackingFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
-                anim();
                 //현재 위치 기준으로 1km 검색
                 mMapView.removeAllPOIItems();
                 mMapView.removeAllCircles();
                 requestSearchLocal(mCurrentLng, mCurrentLat);
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-                break;
-            case R.id.fab3:
-                isTrackingMode = false;
-                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
-                mLoaderLayout.setVisibility(View.VISIBLE);
-                anim();
-                if (mSearchLat != -1 && mSearchLng != -1) {
-                    mMapView.removeAllPOIItems();
-                    mMapView.removeAllCircles();
-                    mMapView.addPOIItem(searchMarker);
-                    requestSearchLocal(mSearchLng, mSearchLat);
-                } else {
-                    FancyToast.makeText(v.getContext(), "검색 먼저 해주세요", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
-                }
-                mLoaderLayout.setVisibility(View.GONE);
-                break;
-            case R.id.fab_stop_tracking:
-                isTrackingMode = false;
-                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
-                stopTrackingFab.setVisibility(View.GONE);
-                FancyToast.makeText(v.getContext(), "현재위치 추적 종료", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 break;
         }
     }
@@ -314,25 +270,6 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                  Log.e(TAG, error.toString());
              }
          });
-    }
-    public void anim() {
-        if (isFabOpen) {
-            fab1.startAnimation(fab_close);
-            fab2.startAnimation(fab_close);
-            fab3.startAnimation(fab_close);
-            fab1.setClickable(false);
-            fab2.setClickable(false);
-            fab3.setClickable(false);
-            isFabOpen = false;
-        } else {
-            fab1.startAnimation(fab_open);
-            fab2.startAnimation(fab_open);
-            fab3.startAnimation(fab_open);
-            fab1.setClickable(true);
-            fab2.setClickable(true);
-            fab3.setClickable(true);
-            isFabOpen = true;
-        }
     }
 
 
@@ -424,20 +361,11 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
             @Override
             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
                 mLoaderLayout.setVisibility(View.GONE);
-                checkList.clear();
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), PlaceDetailActivity.class);
                     assert response.body() != null;
                     intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, response.body().getDocuments().get(0));
                     startActivity(intent);
-//                    checkList.addAll(response.body().getDocuments());
-//                    for(Document document : checkList){
-//                        Log.e(TAG, document.getX()+" "+lat);
-//                        if(document.getX() == String.valueOf(lng) && document.getY() == String.valueOf(lat)){
-//                            intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, document);
-//                            startActivity(intent);
-//                        }
-//                    }
                 }
             }
 
