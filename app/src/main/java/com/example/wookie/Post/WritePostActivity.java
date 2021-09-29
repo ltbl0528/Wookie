@@ -71,6 +71,7 @@ public class WritePostActivity extends AppCompatActivity{
     private Post post = new Post(); // 생성과 동시에 초기화
     private Document placeInfo = new Document();
 
+    private static final int BAD=1, GOOD=2, RECOMMEND=3;
     private ConstraintLayout placeReview;
     private ImageView deletePlaceBtn;
     private Dialog scoreDialog;
@@ -122,7 +123,7 @@ public class WritePostActivity extends AppCompatActivity{
             }
 
             if(passedUri != null){
-                postImg1.setVisibility(View.VISIBLE);
+                postImgLayout.setVisibility(View.VISIBLE);
                 Glide.with(this).load(passedUri).transform(new CenterCrop(),new RoundedCorners(25)).into(postImg1);
                 // 앨범추가 버튼 띄우기
                 addToGallery.setVisibility(View.VISIBLE);
@@ -132,19 +133,19 @@ public class WritePostActivity extends AppCompatActivity{
             if(placeInfo.getPlaceName() != null){
                 placeName.setText(placeInfo.getPlaceName());
                 switch (score){
-                    case 1:
+                    case BAD:
                         scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
                         placeReview.setVisibility(View.VISIBLE);
                         post.setScore(score);
                         post.setReview(isReview);
                         break;
-                    case 2:
+                    case GOOD:
                         scoreImg.setImageDrawable(getDrawable(R.drawable.good));
                         placeReview.setVisibility(View.VISIBLE);
                         post.setScore(score);
                         post.setReview(isReview);
                         break;
-                    case 3:
+                    case RECOMMEND:
                         scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
                         placeReview.setVisibility(View.VISIBLE);
                         post.setScore(score);
@@ -262,7 +263,6 @@ public class WritePostActivity extends AppCompatActivity{
         });
 
         // 장소추가 버튼
-        // TODO: 카카오맵 연동 필요 ( 현재 임의로 장소 평가 다이얼로그 띄움)
         selectPlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
