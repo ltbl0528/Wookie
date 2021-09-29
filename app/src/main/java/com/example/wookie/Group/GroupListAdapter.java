@@ -69,7 +69,6 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int memCount=0;
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    GroupMem groupMem = snapshot.getValue(GroupMem.class);
                     memCount++;
                 }
                 holder.member_count.setText( memCount+"명 참가");

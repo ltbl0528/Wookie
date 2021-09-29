@@ -17,7 +17,9 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.BottomNaviActivity;
 import com.example.wookie.Models.Document;
+import com.example.wookie.Models.GroupMem;
 import com.example.wookie.Models.Post;
+import com.example.wookie.Models.Reply;
 import com.example.wookie.Post.ReadPostActivity;
 import com.example.wookie.R;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +39,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private Context context;
     private static final int BAD=1, GOOD=2, RECOMMEND=3;
 
+    private FirebaseDatabase database;
+    private Query query;
+
     public PostAdapter(ArrayList<Post> postList, Context context){
         this.postList = postList;
         this.context = context;
@@ -55,8 +60,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostAdapter.PostViewHolder holder, int position) {
         // 프로필 사진, 이름 설정
         String userId = postList.get(position).getUserId();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        Query query = database.getReference("users").orderByChild("userId").equalTo(userId);
+        database = FirebaseDatabase.getInstance();
+        query = database.getReference("users").orderByChild("userId").equalTo(userId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -88,8 +93,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             DatabaseReference placeRef = database.getReference("Place").child(postList.get(position).getGroupId()).child(postList.get(position).getPlaceId());
             placeRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Document place = snapshot.getValue(Document.class);
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Document place = dataSnapshot.getValue(Document.class);
                     holder.placeNameTxt.setText(place.getPlaceName());
                 }
 
@@ -113,7 +118,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         // 댓글 개수 설정
-       holder.countComment.setText("댓글1개");
+        DatabaseReference reference = database.getReference("reply").child(postList.get(position).getGroupId());
+        Query query1 = reference.orderByChild("postId").equalTo(postList.get(position).getPostId());
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int replyCount = 0;
+                if(dataSnapshot.exists()){
+
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        replyCount++;
+                    }
+
+                }
+                holder.replyCountTxt.setText("댓글 " + replyCount + "개");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private static class TIME_MAXIMUM{
@@ -155,7 +180,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage, postImage1, scoreImage;
         ConstraintLayout placeReview;
-        TextView userName, diffTime, postContent, placeName, countComment, placeNameTxt;
+        TextView userName, diffTime, postContent, placeName, replyCountTxt, placeNameTxt;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -167,7 +192,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             this.placeReview = itemView.findViewById(R.id.placeReview_layout);
             this.placeName = itemView.findViewById(R.id.place_name);
             this.scoreImage = itemView.findViewById(R.id.score_image);
-            this.countComment = itemView.findViewById(R.id.count_comment);
+            this.replyCountTxt = itemView.findViewById(R.id.reply_count_txt);
             this.placeNameTxt = itemView.findViewById(R.id.placeName_txt);
 
 
