@@ -1,6 +1,8 @@
 package com.example.wookie.Models;
 
-public class Post {
+import java.io.Serializable;
+
+public class Post implements Serializable {
     private String postId;
     private String groupId, userId, placeId;
     private String context, postDate, postImg;
