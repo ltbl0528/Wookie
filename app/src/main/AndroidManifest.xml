@@ -31,6 +31,7 @@
         <activity android:name=".BottomNaviActivity"></activity>
         <activity android:name=".Post.WritePostActivity"></activity>
         <activity android:name=".Post.EditPostActivity"></activity>
+        <activity android:name=".Post.EditSelectPlaceActivity"></activity>
         <activity android:name=".Post.ReadPostActivity"></activity>
         <activity android:name=".Post.SelectPlaceActivity"></activity>
         <activity android:name=".Group.MakeGroupActivity"></activity>
