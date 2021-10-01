@@ -428,6 +428,10 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                     intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, response.body().getDocuments().get(0));
                     intent.putExtra("groupId", groupId);
                     intent.putExtra("userId", userId);
+                    intent.putExtra("mCurrentLat", mCurrentLat);
+                    intent.putExtra("mCurrentLng", mCurrentLng);
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("lng", lng);
                     startActivity(intent);
                 }
             }
@@ -441,6 +445,8 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                 startActivity(intent);
             }
         });
+
+        // showMap(Uri.parse("daummaps://route?sp=" + mCurrentLat + "," + mCurrentLng + "&ep=" + lat + "," + lng + "&by=FOOT")); //길찾기
     }
 
     // 마커 드래그이동시 호출

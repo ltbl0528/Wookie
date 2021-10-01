@@ -77,8 +77,8 @@
 
             <ImageView
                 android:id="@+id/placeCategory_image"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_category_24"
                 app:layout_constraintTop_toBottomOf="@+id/place_image"
@@ -105,8 +105,9 @@
 
             <ImageView
                 android:id="@+id/placeNumber_image"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_phone_24"
                 app:layout_constraintTop_toBottomOf="@id/placeCategory_image"
@@ -125,8 +126,9 @@
 
             <ImageView
                 android:id="@+id/placeAddress_image"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_location_on_24"
                 app:layout_constraintTop_toBottomOf="@+id/placeNumber_image"
@@ -142,7 +144,16 @@
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/placeNumber_txt"
                 app:layout_constraintLeft_toRightOf="@id/placeAddress_image"></TextView>
-
+            <Button
+                android:id="@+id/find_path_button"
+                android:text="길 찾기"
+                android:drawableStart="@drawable/ic_baseline_navigation_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"></Button>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
