@@ -42,7 +42,8 @@
             android:layout_marginBottom="15dp"
             android:background="#A5A5A5"></View>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="40dp">
@@ -179,17 +180,20 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false">
                 </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reply_text_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
         android:orientation="horizontal"
         android:layout_gravity="bottom"
         android:background="@drawable/borderline">
@@ -197,20 +201,24 @@
             android:id="@+id/reply_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
             android:background="@null"
             android:paddingLeft="16dp"
             android:textSize="18sp"
-            android:maxLines="3"
+            android:maxLines="4"
             android:inputType="textMultiLine"
-            android:hint="댓글을 작성해주세요" />
+            android:hint="댓글을 작성해주세요"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/reply_send_btn"/>
         <ImageView
             android:id="@+id/reply_send_btn"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_baseline_send_24"
             android:background="#B59BFF"
-            android:padding="5dp" />
-    </LinearLayout>
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

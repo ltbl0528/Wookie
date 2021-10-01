@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -77,6 +78,8 @@ public class ReadPostActivity extends AppCompatActivity {
     private DatabaseReference reference;
 //    private FirebaseStorage storage;
 //    private StorageReference storageReference;
+    //TODO: 댓글 작성창 height에 따라 스크롤뷰 height marginBottom 실시간으로 수정되게
+    private NestedScrollView nestedScrollView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
