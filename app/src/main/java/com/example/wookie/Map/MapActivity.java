@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wookie.Models.CategoryResult;
 import com.example.wookie.Models.Document;
+import com.example.wookie.Models.Pin;
 import com.example.wookie.Models.Post;
 
 import com.example.wookie.R;
@@ -35,7 +36,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.shashank.sony.fancytoastlib.FancyToast;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -47,6 +49,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,17 +71,19 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
     private double mCurrentLat;
     private double mSearchLng = -1;
     private double mSearchLat = -1;
-    private String mSearchName;
+    private String mSearchName, groupId, userId;
     boolean isTrackingMode = false; //트래킹 모드인지 (3번째 버튼 현재위치 추적 눌렀을 경우 true되고 stop 버튼 누르면 false로 된다)
     Bus bus = BusProvider.getInstance();
     private View view;
+    boolean isClicked = true;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference reference, placeRef;
+    DatabaseReference reference, placeRef, pinRef;
 
     ArrayList<Document> documentArrayList = new ArrayList<>(); //지역명 검색 결과 리스트
     ArrayList<Document> reviewArrayList = new ArrayList<>();
     ArrayList<Post> postList = new ArrayList<>();//리뷰 장소 리스트
+    ArrayList<Pin> pinList = new ArrayList<>();
 
 
     MapPOIItem searchMarker = new MapPOIItem();
@@ -126,6 +132,19 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
         mLoaderLayout.setVisibility(View.VISIBLE);
+
+        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+            @Override
+            public Unit invoke(User user, Throwable throwable) {
+                if (user != null){//로그인 되면
+                    userId = String.valueOf(user.getId());
+                }
+                else{
+                    Log.e(TAG, throwable.toString());
+                }
+                return null;
+            }
+        });
 
         // editText 검색 텍스처이벤트
         mSearchEdit.addTextChangedListener(new TextWatcher() {
@@ -186,12 +205,6 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                 }
             }
         });
-        mSearchEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FancyToast.makeText(view.getContext(), "검색리스트에서 장소를 선택해주세요", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
-            }
-        });
     }
 
     @Override
@@ -199,30 +212,78 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         int id = v.getId();
         switch (id) {
             case R.id.fab2: //아래버튼에서부터 1~3임
-                FancyToast.makeText(v.getContext(), "현재위치 추적 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
-                mLoaderLayout.setVisibility(View.VISIBLE);
-                isTrackingMode = true;
-                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
-                mLoaderLayout.setVisibility(View.GONE);
+                if(isClicked){
+                    fab2.setImageResource(R.drawable.ic_push_pin_clicked);
+                    fab1.setEnabled(false); //일단 추적 불가능하게 설정
+                    mLoaderLayout.setVisibility(View.VISIBLE);
+                    mMapView.removeAllPOIItems();
+                    mMapView.removeAllCircles();
+                    pinRef = database.getReference("Pin").child(groupId);
+                    pinRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                    Pin pin = dataSnapshot.getValue(Pin.class);
+                                    pinList.add(pin);
+                                    MapPOIItem marker = new MapPOIItem();
+                                    marker.setItemName(pin.getPlaceName());
+                                    double x2 = Double.parseDouble(pin.getY());
+                                    double y2 = Double.parseDouble(pin.getX());
+                                    //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                    MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x2, y2);
+                                    marker.setMapPoint(mapPoint);
+                                    marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                    marker.setCustomImageResourceId(R.drawable.pin_marker_35); // 마커 이미지.
+                                    marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                    marker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+                                    mMapView.addPOIItem(marker);
+                                    mLoaderLayout.setVisibility(View.GONE);
+                                }
+                            }
+                            else{
+                                Toast.makeText(getActivity().getApplicationContext(), "찜한 장소가 없습니다.", Toast.LENGTH_SHORT).show();
+                                mLoaderLayout.setVisibility(View.GONE);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    isClicked = false;
+                }
+                else{
+                    fab2.setImageResource(R.drawable.ic_push_pin);
+                    fab1.setEnabled(true);
+                    mLoaderLayout.setVisibility(View.VISIBLE);
+                    mMapView.removeAllPOIItems();
+                    mMapView.removeAllCircles();
+                    requestSearchLocal(mCurrentLng, mCurrentLat);
+                    mLoaderLayout.setVisibility(View.GONE);
+                    isClicked = true;
+                }
+//                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 break;
+                //TODO:fab1 토글버튼으로 만들기
             case R.id.fab1:
-                isTrackingMode = false;
-                FancyToast.makeText(v.getContext(), "현재위치기준 1km 검색 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
+                isTrackingMode = true;
                 mLoaderLayout.setVisibility(View.VISIBLE);
-                //현재 위치 기준으로 1km 검색
                 mMapView.removeAllPOIItems();
                 mMapView.removeAllCircles();
                 requestSearchLocal(mCurrentLng, mCurrentLat);
-                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+                mLoaderLayout.setVisibility(View.GONE);
                 break;
         }
     }
 
     private void requestSearchLocal(double x, double y) {
-        final String groupId = getActivity().getIntent().getStringExtra("groupId");
+        groupId = getActivity().getIntent().getStringExtra("groupId");
 
         reviewArrayList.clear();
         postList.clear();
+        pinList.clear();
 
         reference = database.getReference("Post").child(groupId);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -249,7 +310,7 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                                         MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x1, y1);
                                         marker.setMapPoint(mapPoint);
                                         marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-                                        marker.setCustomImageResourceId(R.drawable.small_cat); // 마커 이미지.
+                                        marker.setCustomImageResourceId(R.drawable.marker_basic_35); // 마커 이미지.
                                         marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
                                         marker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
                                         mMapView.addPOIItem(marker);
@@ -331,12 +392,12 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
     public void showMap(Uri geoLocation) {
         Intent intent;
         try {
-            FancyToast.makeText(getActivity().getApplicationContext(), "카카오맵으로 길찾기를 시도합니다.", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
+            Toast.makeText(getActivity().getApplicationContext(), "카카오맵으로 길찾기를 시도합니다.", Toast.LENGTH_SHORT).show();
             intent = new Intent(Intent.ACTION_VIEW, geoLocation);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } catch (Exception e) {
-            FancyToast.makeText(getActivity().getApplicationContext(), "길찾기에는 카카오맵이 필요합니다. 다운받아주시길 바랍니다.", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
+            Toast.makeText(getActivity().getApplicationContext(), "카카오맵이 설치되어있지 않습니다. 스토어에서 설치해주세요.", Toast.LENGTH_LONG).show();
             intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://play.google.com/store/apps/details?id=net.daum.android.map&hl=ko"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -365,13 +426,16 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                     Intent intent = new Intent(getActivity().getApplicationContext(), PlaceDetailActivity.class);
                     assert response.body() != null;
                     intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, response.body().getDocuments().get(0));
+                    intent.putExtra("groupId", groupId);
+                    intent.putExtra("userId", userId);
                     startActivity(intent);
                 }
             }
 
             @Override
             public void onFailure(Call<CategoryResult> call, Throwable t) {
-                FancyToast.makeText(getActivity().getApplicationContext(), "해당장소에 대한 상세정보는 없습니다.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "해당장소에 대한 상세정보는 없습니다.", Toast.LENGTH_SHORT).show();
+//                FancyToast.makeText(getActivity().getApplicationContext(), "해당장소에 대한 상세정보는 없습니다.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
                 mLoaderLayout.setVisibility(View.GONE);
                 Intent intent = new Intent(getActivity().getApplicationContext(), PlaceDetailActivity.class);
                 startActivity(intent);
@@ -441,7 +505,8 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
 
     @Subscribe //검색예시 클릭시 이벤트 오토버스
     public void search(Document document) {//public항상 붙여줘야함
-        FancyToast.makeText(getActivity().getApplicationContext(), document.getPlaceName() + " 검색", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
+        Toast.makeText(this.getContext(), document.getPlaceName() + " 검색", Toast.LENGTH_SHORT).show();
+//        FancyToast.makeText(getActivity().getApplicationContext(), document.getPlaceName() + " 검색", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
         mSearchName = document.getPlaceName();
         mSearchLng = Double.parseDouble(document.getX());
         mSearchLat = Double.parseDouble(document.getY());

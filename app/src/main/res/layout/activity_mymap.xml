@@ -7,8 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp">
+        android:layout_marginTop="8dp">
         <Button
             android:id="@+id/back_btn"
             android:layout_width="25dp"
@@ -33,16 +32,11 @@
             android:layout_marginLeft="10dp"
             ></TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#A5A5A5"
-        android:layout_marginTop="60dp"></View>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="58dp"
         >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/map_recyclerview"

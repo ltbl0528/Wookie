@@ -21,14 +21,17 @@
                 android:background="@drawable/ic_baseline_arrow_back_ios_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp">
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp">
             </Button>
             <TextView
                 android:id="@+id/placeName_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:text="신전떡볶이 xx점"
                 android:textSize="22dp"
                 android:textStyle="bold"
@@ -36,7 +39,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 ></TextView>
+            <ImageView
+                android:id="@+id/pin_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/pin_selector"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"></ImageView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -62,10 +77,10 @@
 
             <ImageView
                 android:id="@+id/placeCategory_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_baseline_restaurant_24"
+                android:src="@drawable/ic_baseline_category_24"
                 app:layout_constraintTop_toBottomOf="@+id/place_image"
                 app:layout_constraintStart_toStartOf="parent"></ImageView>
             <TextView
@@ -74,12 +89,12 @@
                 android:layout_height="25dp"
                 android:layout_marginLeft="5dp"
                 android:text="분식"
-                android:textSize="15dp"
+                android:textSize="17dp"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/place_image"
                 app:layout_constraintLeft_toRightOf="@id/placeCategory_image"></TextView>
             <TextView
-                android:id="@+id/score"
+                android:id="@+id/score_avg"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_marginRight="10dp"
@@ -90,8 +105,8 @@
 
             <ImageView
                 android:id="@+id/placeNumber_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_phone_24"
                 app:layout_constraintTop_toBottomOf="@id/placeCategory_image"
@@ -100,17 +115,18 @@
                 android:id="@+id/placeNumber_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:text="010-0000-0000"
-                android:textSize="15dp"
+                android:textSize="17dp"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/placeCategory_txt"
                 app:layout_constraintLeft_toRightOf="@id/placeNumber_image"></TextView>
 
             <ImageView
                 android:id="@+id/placeAddress_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_location_on_24"
                 app:layout_constraintTop_toBottomOf="@+id/placeNumber_image"
@@ -119,9 +135,10 @@
                 android:id="@+id/placeAddress_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:text="경기도 화성시 xx동 xx-x"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/placeNumber_txt"
                 app:layout_constraintLeft_toRightOf="@id/placeAddress_image"></TextView>
@@ -133,13 +150,18 @@
                 android:layout_marginTop="10dp"
                 app:layout_constraintTop_toBottomOf="@+id/placeAddress_image"></View>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         <TextView
+            android:id="@+id/post_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="포스트 5개"
-            android:textSize="15dp"></TextView>
+            android:textColor="@color/black"
+            android:textSize="18dp"></TextView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 </LinearLayout>

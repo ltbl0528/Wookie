@@ -206,7 +206,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     intent.putExtra("groupId", groupId);
                     intent.putExtra("postId", postId);
                     itemView.getContext().startActivity(intent);
-                    ((BottomNaviActivity)itemView.getContext()).finish();
+                    //TODO: readpostactivity에서 이전 액티비티에 따라 다른 화면 뜨게 만들기
+//                    ((BottomNaviActivity)itemView.getContext()).finish();
                 }
             });
         }
