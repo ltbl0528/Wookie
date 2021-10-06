@@ -1,6 +1,5 @@
 package com.example.wookie.Feed;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,20 +10,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.wookie.BottomNaviActivity;
-import com.example.wookie.Group.GroupListActivity;
-import com.example.wookie.InviteActivity;
+import com.example.wookie.Models.Group;
 import com.example.wookie.Models.Post;
-import com.example.wookie.Post.ReadPostActivity;
-import com.example.wookie.Post.WritePostActivity;
 import com.example.wookie.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +24,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.FeedTemplate;
+import com.kakao.message.template.LinkObject;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 
@@ -53,7 +53,8 @@ public class FeedActivity extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private Query query;
-    private String userId;
+    private Group group;
+    private String userId, userLoginName;
 
     public FeedActivity(){
         // 비어있는 constructor 필요
@@ -83,9 +84,37 @@ public class FeedActivity extends Fragment {
         addUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), InviteActivity.class);
-                intent.putExtra("groupId", groupId);
-                startActivity(intent);
+                FeedTemplate params = FeedTemplate
+                        .newBuilder(ContentObject.newBuilder(userLoginName+"님이 " + group.getGroupName()+"방에 초대했습니다.",
+                                group.getGroupImg(),
+                                LinkObject.newBuilder().setWebUrl("https://developers.kakao.com")
+                                        .setMobileWebUrl("https://developers.kakao.com").build())
+                                .setDescrption(
+                                        "초대코드 : " + group.getInviteCode()+"\n"+
+                                                "비밀번호 : " + group.getGroupPwd())
+                                .build())
+                        .addButton(new ButtonObject("그룹 가입하기", LinkObject.newBuilder()
+                                .setWebUrl("https://developers.kakao.com")
+                                .setMobileWebUrl("https://developers.kakao.com")
+                                .setAndroidExecutionParams("key1=value1")
+                                .setIosExecutionParams("key1=value1")
+                                .build()))
+                        .build();
+//
+//                Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+//                serverCallbackArgs.put("user_id", "${current_user_id}");
+
+
+                KakaoLinkService.getInstance().sendDefault(getContext(), params, new ResponseCallback<KakaoLinkResponse>() {
+                    @Override
+                    public void onFailure(ErrorResult errorResult) { Log.e(TAG, "초대링크 전송 실패"); }
+
+                    @Override
+                    public void onSuccess(KakaoLinkResponse result) {
+                        Log.e(TAG, "초대링크 전송 성공");
+                    }
+                });
+
             }
         });
 
@@ -136,6 +165,7 @@ public class FeedActivity extends Fragment {
                         public Unit invoke(User user, Throwable throwable) {
                             if (user != null){
                                 userId = String.valueOf(user.getId());
+                                userLoginName = user.getKakaoAccount().getProfile().getNickname();
                                 if(userId.equals(dataSnapshot.child(groupId).child("groupAdminId").getValue().toString())){
                                     addUserBtn.setVisibility(View.VISIBLE);
                                 }
@@ -144,6 +174,24 @@ public class FeedActivity extends Fragment {
                                 Toast.makeText(getContext(),"로그인 해주세요", Toast.LENGTH_SHORT).show();
                             }
                             return null;
+                        }
+                    });
+
+                    query = database.getReference("group").orderByChild("groupId").equalTo(groupId);
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()){
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    group = snapshot.getValue(Group.class);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e(TAG, error.toString());
                         }
                     });
                 }
