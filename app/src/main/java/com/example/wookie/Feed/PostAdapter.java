@@ -52,6 +52,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public PostAdapter.PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_feed, parent, false);
         PostViewHolder holder = new PostViewHolder(view);
+        holder.setIsRecyclable(false);
 
         return holder;
     }
