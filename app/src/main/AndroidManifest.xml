@@ -63,13 +63,7 @@
         <activity android:name=".Map.PlaceDetailActivity" />
         <activity android:name=".Map.MapSearchDetailActivity" />
         <activity android:name=".Map.MapNavigationActivity" />
-        <activity android:name=".Map.MapTestActivity">
-            <intent-filter>
-                <action android:name="com.google.android.gms.actions.RESERVE_TAXI_RESERVATION" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />

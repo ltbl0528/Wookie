@@ -35,6 +35,7 @@ import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Pin;
 import com.example.wookie.Models.Post;
 
+import com.example.wookie.MyPage.MyMapActivity;
 import com.example.wookie.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;

@@ -146,14 +146,19 @@
                 app:layout_constraintLeft_toRightOf="@id/placeAddress_image"></TextView>
             <Button
                 android:id="@+id/find_path_button"
-                android:text="길 찾기"
+                android:text="길찾기"
+                android:textSize="15dp"
+                android:textColor="@color/white"
+                android:layout_width="73dp"
+                android:layout_height="42dp"
                 android:drawableStart="@drawable/ic_baseline_navigation_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@android:color/transparent"
+                android:drawableTint="@color/white"
+                android:background="@drawable/round_border"
+                android:backgroundTint="#9E7DFD"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"></Button>
+                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingRight="2dp"
+                android:layout_margin="7dp"></Button>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"

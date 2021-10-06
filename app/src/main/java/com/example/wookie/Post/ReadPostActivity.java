@@ -25,10 +25,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.BottomNaviActivity;
-import com.example.wookie.Feed.PostAdapter;
+import com.example.wookie.Map.IntentKey;
+import com.example.wookie.Map.PlaceDetailActivity;
 import com.example.wookie.Models.Document;
-import com.example.wookie.Models.Group;
-import com.example.wookie.Models.GroupMem;
 import com.example.wookie.Models.Post;
 import com.example.wookie.Models.Reply;
 import com.example.wookie.R;
@@ -38,13 +37,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
-
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -277,6 +271,19 @@ public class ReadPostActivity extends AppCompatActivity {
                                 Document place = snapshot.getValue(Document.class);
                                 placeNameTxt.setText(place.getPlaceName());
                                 placeAddressTxt.setText(place.getRoadAddressName());
+                                placeNameTxt.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(ReadPostActivity.this, PlaceDetailActivity.class);
+                                        intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, place);
+                                        intent.putExtra("groupId", groupId);
+                                        intent.putExtra("userId", userId);
+//                                        intent.putExtra("lat", place.getX());
+//                                        intent.putExtra("lng", place.getY());
+//                                        Log.e(TAG, place.getX()+" "+place.getY());
+                                        startActivity(intent);
+                                    }
+                                });
                             }
 
                             @Override
@@ -348,12 +355,12 @@ public class ReadPostActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        final String groupId = getIntent().getStringExtra("groupId");
-        Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
-        intent.putExtra("groupId", groupId);
-        startActivity(intent);
-        finish();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        final String groupId = getIntent().getStringExtra("groupId");
+//        Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
+//        intent.putExtra("groupId", groupId);
+//        startActivity(intent);
+//        finish();
+//    }
 }

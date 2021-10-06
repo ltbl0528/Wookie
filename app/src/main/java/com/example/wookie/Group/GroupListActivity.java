@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wookie.Map.MapTestActivity;
 import com.example.wookie.Models.Group;
 import com.example.wookie.Models.GroupMem;
 import com.example.wookie.R;
@@ -39,7 +38,7 @@ import kotlin.jvm.functions.Function2;
 public class GroupListActivity extends AppCompatActivity {
 
     private String TAG = "GroupListActivity";
-    private Button enterBtn, addGroupBtn, enterDialogBtn, codeMenuBtn, groupMakeMenuBtn, cancelBtn, cancelBtn2;
+    private Button addGroupBtn, enterDialogBtn, codeMenuBtn, groupMakeMenuBtn, cancelBtn, cancelBtn2;
     private EditText groupCodeInput, groupPwdInput;
     private String userLoginId;
     private RecyclerView recyclerView;
