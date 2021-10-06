@@ -1,8 +1,13 @@
 package com.example.wookie.MyPage;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +20,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.wookie.Feed.FeedActivity;
 import com.example.wookie.Map.ApiClient;
 import com.example.wookie.Map.ApiInterface;
 import com.example.wookie.Map.BusProvider;
@@ -60,6 +67,7 @@ import retrofit2.Response;
 public class MyMapActivity extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener, MapView.CurrentLocationEventListener {
 
     private String TAG = "MyMapActivity";
+    private static final int LOCATION_PERMISSION = 1004; //권한 변수
 
     //xml
     MapView mMapView;
@@ -71,7 +79,6 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
     private Button backBtn;
     EditText mSearchEdit;
     private TextView userNameTxt;
-    private String groupId, userId;
 
     //value
     MapPoint currentMapPoint;
@@ -80,17 +87,19 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
     private double mSearchLng = -1;
     private double mSearchLat = -1;
     private String mSearchName;
+    private String groupId, userId;
     boolean isTrackingMode = false; //트래킹 모드인지 (3번째 버튼 현재위치 추적 눌렀을 경우 true되고 stop 버튼 누르면 false로 된다)
     Bus bus = BusProvider.getInstance();
-    boolean isClicked = true;
+    boolean isClickedOne = true; // 첫번째 플로팅 버튼(현재 위치 트래킹)을 눌렀는지 확인하는 변수
+    boolean isClickedTwo = true; // 두번째 플로팅 버튼(찜 버튼)을 눌렀는지 확인하는 변수
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference reference, placeRef, pinRef;
 
     ArrayList<Document> documentArrayList = new ArrayList<>(); //지역명 검색 결과 리스트
-    ArrayList<Document> reviewArrayList = new ArrayList<>();
-    ArrayList<Post> postList = new ArrayList<>();//리뷰 장소 리스트
-    ArrayList<Pin> pinList = new ArrayList<>();
+    ArrayList<Document> reviewArrayList = new ArrayList<>(); //리뷰 장소 리스트
+    ArrayList<Post> postList = new ArrayList<>(); //리뷰 글 리스트
+    ArrayList<Pin> pinList = new ArrayList<>(); //찜 장소 리스트
 
 
     MapPOIItem searchMarker = new MapPOIItem();
@@ -104,11 +113,17 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.activity_mymap, container, false);
-//        Bundle bundle = new Bundle();
-//        String groupId = bundle.getString("groupId");
+        setMyMap(); //mapview 불러오기 전 userId를 받아오고 세팅
 
-        setMyMap();
-        initView(view);
+        //권한이 있는지 확인
+        if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {//권한없음
+            //권한 요청 코드
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION);
+        } else {//권한있음
+            initView(view);
+        }
 
         return view;
     }
@@ -182,7 +197,7 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
         int id = v.getId();
         switch (id) {
             case R.id.fab2: //아래버튼에서부터 1~3임
-                if(isClicked){
+                if(isClickedTwo){
                     fab2.setImageResource(R.drawable.ic_push_pin_clicked);
                     fab1.setEnabled(false); //일단 추적 불가능하게 설정
                     mLoaderLayout.setVisibility(View.VISIBLE);
@@ -223,7 +238,7 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
 
                         }
                     });
-                    isClicked = false;
+                    isClickedTwo = false;
                 }
                 else{
                     fab2.setImageResource(R.drawable.ic_push_pin);
@@ -232,19 +247,30 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
                     mMapView.removeAllCircles();
                     requestSearchLocal(mCurrentLng, mCurrentLat);
                     mLoaderLayout.setVisibility(View.GONE);
-                    isClicked = true;
+                    isClickedTwo = true;
                 }
 //                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 break;
-            //TODO:fab1 토글버튼으로 만들기
             case R.id.fab1:
-                isTrackingMode = true;
-                mLoaderLayout.setVisibility(View.VISIBLE);
-                mMapView.removeAllPOIItems();
-                mMapView.removeAllCircles();
-                requestSearchLocal(mCurrentLng, mCurrentLat);
-                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
-                mLoaderLayout.setVisibility(View.GONE);
+                if(isClickedOne){
+                    fab1.setImageResource(R.drawable.ic_my_location_clicked);
+                    isTrackingMode = true;
+                    mLoaderLayout.setVisibility(View.VISIBLE);
+                    mMapView.removeAllPOIItems();
+                    mMapView.removeAllCircles();
+                    requestSearchLocal(mCurrentLng, mCurrentLat);
+                    mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+                    mLoaderLayout.setVisibility(View.GONE);
+                    isClickedOne = false;
+                }
+                else{
+                    fab1.setImageResource(R.drawable.ic_my_location);
+                    isTrackingMode = false;
+                    mLoaderLayout.setVisibility(View.VISIBLE);
+                    mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+                    mLoaderLayout.setVisibility(View.GONE);
+                    isClickedOne = true;
+                }
                 break;
         }
     }
@@ -481,6 +507,44 @@ public class MyMapActivity extends Fragment implements MapView.MapViewEventListe
     public void onCurrentLocationUpdateCancelled(MapView mapView) {
         Log.i(TAG, "onCurrentLocationUpdateCancelled");
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initView(view);
+                } else {
+                    // 위치 권한 거부
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getContext());
+                    alertDialog.setTitle("앱 권한");
+                    alertDialog.setMessage("해당 앱의 지도 기능을 이용하시려면 애플리케이션 정보>권한에서 위치 권한을 허용해 주십시오");
+                    // 권한설정 클릭 시 이벤트 발생
+                    alertDialog.setPositiveButton("권한 설정",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getActivity().getApplicationContext().getPackageName()));
+                                    startActivity(intent);
+                                    dialog.cancel();
+                                }
+                            });
+                    //취소
+                    alertDialog.setNegativeButton("취소",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    Toast.makeText(getContext(), "마이페이지 화면으로 돌아갑니다.", Toast.LENGTH_LONG).show();
+                                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                                    MyPageActivity myPageActivity = new MyPageActivity();
+                                    transaction.replace(R.id.main_frame, myPageActivity);
+                                }
+                            });
+                    alertDialog.show();
+                }
+                return;
+        }
+
     }
 
 //    @Override
