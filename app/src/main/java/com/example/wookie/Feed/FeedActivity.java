@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +18,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.wookie.BottomNaviActivity;
 import com.example.wookie.Group.GroupListActivity;
+import com.example.wookie.InviteActivity;
 import com.example.wookie.Models.Post;
 import com.example.wookie.Post.ReadPostActivity;
 import com.example.wookie.Post.WritePostActivity;
@@ -29,14 +32,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
 
 import java.util.ArrayList;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 public class FeedActivity extends Fragment {
 
     private String TAG = "FeedActivity";
     private View view;
     private TextView groupNameTxt;
+    private ImageButton addUserBtn;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -44,6 +53,7 @@ public class FeedActivity extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private Query query;
+    private String userId;
 
     public FeedActivity(){
         // 비어있는 constructor 필요
@@ -54,6 +64,7 @@ public class FeedActivity extends Fragment {
         view = inflater.inflate(R.layout.activity_feed, container, false);
 
         groupNameTxt = view.findViewById(R.id.group_name);
+        addUserBtn = view.findViewById(R.id.add_user_btn);
         recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -68,6 +79,14 @@ public class FeedActivity extends Fragment {
 
         setGroupName(groupId); // 방제 설정
         setFeed(groupId); // 피드 목록 설정
+
+        addUserBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), InviteActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -110,6 +129,22 @@ public class FeedActivity extends Fragment {
                 if(dataSnapshot.exists()){
                     String groupName = dataSnapshot.child(groupId).child("groupName").getValue().toString();
                     groupNameTxt.setText(groupName);
+
+                    UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+                        @Override
+                        public Unit invoke(User user, Throwable throwable) {
+                            if (user != null){
+                                userId = String.valueOf(user.getId());
+                                if(userId.equals(dataSnapshot.child(groupId).child("groupAdminId").getValue().toString())){
+                                    addUserBtn.setVisibility(View.VISIBLE);
+                                }
+                            }
+                            else{
+                                Toast.makeText(getContext(),"로그인 해주세요", Toast.LENGTH_SHORT).show();
+                            }
+                            return null;
+                        }
+                    });
                 }
             }
 
