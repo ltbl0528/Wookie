@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.wookie.Feed.PostAdapter;
 import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Pin;
@@ -36,6 +39,8 @@ public class PlaceDetailActivity extends AppCompatActivity {
     private Button backBtn, findPathBtn;
     private ImageView pinBtn;
     private String groupId, userId;
+    private ImageView imageView;
+
     private double lat, lng;
     private double mCurrentLat, mCurrentLng;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -56,6 +61,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         categoryText = findViewById(R.id.placeCategory_txt);
 //        urlText = findViewById(R.id.placedetail_tv_url);
         phoneText = findViewById(R.id.placeNumber_txt);
+        imageView = findViewById(R.id.place_image);
         postCnt = findViewById(R.id.post_count);
         pinBtn = findViewById(R.id.pin_button);
         findPathBtn = findViewById(R.id.find_path_button);
@@ -158,6 +164,10 @@ public class PlaceDetailActivity extends AppCompatActivity {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Post post = snapshot.getValue(Post.class);
                         postList.add(post);
+                        if(post.getPostImg() != null){
+                            Glide.with(imageView).load(post.getPostImg())
+                                    .transform(new CenterCrop()).into(imageView);
+                        }
                     }
                     postCnt.setText("포스트 " + postList.size()+"개");
                     adapter.notifyDataSetChanged();
