@@ -84,6 +84,7 @@ public class FeedActivity extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), InviteActivity.class);
+                intent.putExtra("groupId", groupId);
                 startActivity(intent);
             }
         });
