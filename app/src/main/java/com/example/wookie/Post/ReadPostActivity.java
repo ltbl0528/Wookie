@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,6 +64,7 @@ public class ReadPostActivity extends AppCompatActivity {
 
     private String userLoginId;
     private TextView replyCountTxt;
+    private ConstraintLayout replyTxtLayout;
     private EditText replyEditTxt;
     private ImageView replySendBtn;
     private RecyclerView recyclerView;
@@ -70,9 +74,8 @@ public class ReadPostActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference reference;
-//    private FirebaseStorage storage;
+    //    private FirebaseStorage storage;
 //    private StorageReference storageReference;
-    //TODO: 댓글 작성창 height에 따라 스크롤뷰 height marginBottom 실시간으로 수정되게
     private NestedScrollView nestedScrollView;
 
     @Override
@@ -91,9 +94,11 @@ public class ReadPostActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.back_btn);
         editDelBtn = findViewById(R.id.edit_del_btn);
         replyCountTxt = findViewById(R.id.reply_count_txt);
+        replyTxtLayout = findViewById(R.id.reply_text_layout);
         replyEditTxt = findViewById(R.id.reply_edit_text);
         replySendBtn = findViewById(R.id.reply_send_btn);
         recyclerView = findViewById(R.id.recyclerView);
+        nestedScrollView = findViewById(R.id.ScrollView);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL)); // 구분선 추가
@@ -165,6 +170,23 @@ public class ReadPostActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+            }
+        });
+
+        replyEditTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // 댓글 작성창 높이에 따라 스크롤뷰 길이 조절
+                int height = replyTxtLayout.getHeight();
+                LinearLayout.LayoutParams scrollViewParams = (LinearLayout.LayoutParams) nestedScrollView.getLayoutParams();
+                scrollViewParams.bottomMargin = height;
+                nestedScrollView.setLayoutParams(scrollViewParams);
             }
         });
 

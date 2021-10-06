@@ -43,7 +43,7 @@
             android:background="#A5A5A5"></View>
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
+            android:id="@+id/ScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="40dp">

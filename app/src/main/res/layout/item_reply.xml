@@ -49,7 +49,6 @@
                     android:id="@+id/reply_context"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="3"
                     android:text="마자ㅠ 또 먹고 싶다... 다음주에 또 먹으러 갈래?"
                     android:textColor="#353535"
                     android:textSize="18dp"
