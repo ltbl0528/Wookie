@@ -55,7 +55,7 @@ public class ReadPostActivity extends AppCompatActivity {
     private String TAG = "ReadPostActivity";
     private static final int BAD=1, GOOD=2, RECOMMEND=3;
     private ImageView userImage, postImage1, scoreImage;
-    private TextView userName, postDate, postContent, placeNameTxt, placeAddressTxt;
+    private TextView userName, postDate, postContent, placeNameTxt, placeAddressTxt, scoreTxt;
     private LinearLayout placeReview;
     private Button editDelBtn;
     private Button backBtn;
@@ -90,6 +90,7 @@ public class ReadPostActivity extends AppCompatActivity {
         postImage1 = findViewById(R.id.post_image1);
         placeReview = findViewById(R.id.placeReview_layout);
         scoreImage = findViewById(R.id.score_image);
+        scoreTxt = findViewById(R.id.score_txt);
         editDelBtn = findViewById(R.id.edit_del_btn);
         backBtn = findViewById(R.id.back_btn);
         editDelBtn = findViewById(R.id.edit_del_btn);
@@ -314,16 +315,14 @@ public class ReadPostActivity extends AppCompatActivity {
                             }
                         });
                         placeReview.setVisibility(View.VISIBLE);
-                        switch (post.getScore()){
-                            case BAD:
-                                scoreImage.setImageDrawable(getDrawable(R.drawable.bad));
-                                break;
-                            case GOOD:
-                                scoreImage.setImageDrawable(getDrawable(R.drawable.good));
-                                break;
-                            case RECOMMEND:
-                                scoreImage.setImageDrawable(getDrawable(R.drawable.recommend));
-                                break;
+                        int score = post.getScore();
+                        scoreTxt.setText(Integer.toString(score)+".0");
+                        if (score > 0 && score <= 1) {
+                            scoreImage.setImageDrawable(getDrawable(R.drawable.bad_rating));
+                        } else if (score > 1 && score < 4) {
+                            scoreImage.setImageDrawable(getDrawable(R.drawable.good_rating));
+                        } else if (score >= 4 && score <= 5) {
+                            scoreImage.setImageDrawable(getDrawable(R.drawable.ic_rating_fill));
                         }
                     }
                 }

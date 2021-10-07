@@ -53,7 +53,7 @@ public class WritePostActivity extends AppCompatActivity{
 
     private String TAG = "WritePostActivity";
     private Button cancelBtn, selectImgBtn, selectPlaceBtn;
-    private TextView postSubmitBtn, placeName;
+    private TextView postSubmitBtn, placeName, scoreTxt;
     private EditText postEditTxt;
     private RelativeLayout postImgLayout;
     private ImageView postImg1;
@@ -71,7 +71,7 @@ public class WritePostActivity extends AppCompatActivity{
     private Post post = new Post(); // 생성과 동시에 초기화
     private Document placeInfo = new Document();
 
-    private static final int BAD=1, GOOD=2, RECOMMEND=3;
+//    private static final int BAD=1, GOOD=2, RECOMMEND=3;
     private ConstraintLayout placeReview;
     private ImageView deletePlaceBtn;
     private Dialog scoreDialog;
@@ -101,7 +101,7 @@ public class WritePostActivity extends AppCompatActivity{
         scoreDialog= new Dialog(WritePostActivity.this);
         scoreDialog.setContentView(R.layout.dialog_score);
         scoreImg = findViewById(R.id.score_image);
-
+        scoreTxt = findViewById(R.id.score_txt);
 
         // 해당 그룹방id 받아오기
         mContext = this;
@@ -133,28 +133,22 @@ public class WritePostActivity extends AppCompatActivity{
 
             if(placeInfo.getPlaceName() != null){
                 placeName.setText(placeInfo.getPlaceName());
-                switch (score){
-                    case BAD:
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(score);
-                        post.setReview(isReview);
-                        break;
-                    case GOOD:
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.good));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(score);
-                        post.setReview(isReview);
-                        break;
-                    case RECOMMEND:
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(score);
-                        post.setReview(isReview);
-                        break;
-                    default:
-                        break;
-
+                scoreTxt.setText(Integer.toString(score)+".0");
+                if (score > 0 && score <= 1) {
+                    scoreImg.setImageDrawable(getDrawable(R.drawable.bad_rating));
+                    placeReview.setVisibility(View.VISIBLE);
+                    post.setScore(score);
+                    post.setReview(isReview);
+                } else if (score > 1 && score < 4) {
+                    scoreImg.setImageDrawable(getDrawable(R.drawable.good_rating));
+                    placeReview.setVisibility(View.VISIBLE);
+                    post.setScore(score);
+                    post.setReview(isReview);
+                } else if (score >= 4 && score <= 5) {
+                    scoreImg.setImageDrawable(getDrawable(R.drawable.ic_rating_fill));
+                    placeReview.setVisibility(View.VISIBLE);
+                    post.setScore(score);
+                    post.setReview(isReview);
                 }
             }
         }
@@ -230,6 +224,7 @@ public class WritePostActivity extends AppCompatActivity{
                     intent.putExtra("groupId", groupId);
                     startActivity(intent);
                     finish();
+                    //TODO: 글 작성 이전 시점의 피드 finish
                 }
 
             }

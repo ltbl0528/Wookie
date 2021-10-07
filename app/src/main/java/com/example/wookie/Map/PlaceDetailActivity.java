@@ -35,9 +35,9 @@ import java.util.ArrayList;
 
 public class PlaceDetailActivity extends AppCompatActivity {
     private String TAG = "PlaceDetailActivity";
-    private TextView placeNameText, addressText, categoryText, phoneText, postCnt;
+    private TextView placeNameText, addressText, categoryText, phoneText, postCnt, scoreAvgText;
     private Button backBtn, findPathBtn;
-    private ImageView pinBtn;
+    private ImageView pinBtn; //scoreImage;
     private String groupId, userId;
     private ImageView imageView;
 
@@ -59,9 +59,11 @@ public class PlaceDetailActivity extends AppCompatActivity {
         placeNameText = findViewById(R.id.placeName_txt);
         addressText = findViewById(R.id.placeAddress_txt);
         categoryText = findViewById(R.id.placeCategory_txt);
+        scoreAvgText = findViewById(R.id.score_avg);
 //        urlText = findViewById(R.id.placedetail_tv_url);
         phoneText = findViewById(R.id.placeNumber_txt);
         imageView = findViewById(R.id.place_image);
+//        scoreImage = findViewById(R.id.score_image);
         postCnt = findViewById(R.id.post_count);
         pinBtn = findViewById(R.id.pin_button);
         findPathBtn = findViewById(R.id.find_path_button);
@@ -161,14 +163,32 @@ public class PlaceDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
+                    float avg;
+                    int sum = 0;
+                    float isReviewCnt = 0.0f;
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Post post = snapshot.getValue(Post.class);
                         postList.add(post);
-                        if(post.getPostImg() != null){
+                        if(!post.getPostImg().equals("null")){
                             Glide.with(imageView).load(post.getPostImg())
                                     .transform(new CenterCrop()).into(imageView);
                         }
+                        if(post.isReview()){
+                            isReviewCnt++;
+                        }
+                        sum += post.getScore();
                     }
+                    avg = sum / isReviewCnt;
+
+//                    if (avg > 0 && avg <= 1) {
+//                        scoreImage.setImageDrawable(getDrawable(R.drawable.bad_avg));
+//                    } else if (avg > 1 && avg < 4) {
+//                        scoreImage.setImageDrawable(getDrawable(R.drawable.good_avg));
+//                    } else if (avg >= 4 && avg <= 5) {
+//                        scoreImage.setImageDrawable(getDrawable(R.drawable.rec_avg));
+//                    }
+
+                    scoreAvgText.setText(Float.toString(avg));
                     postCnt.setText("포스트 " + postList.size()+"개");
                     adapter.notifyDataSetChanged();
                 }

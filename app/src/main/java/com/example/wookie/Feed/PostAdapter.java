@@ -105,16 +105,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 }
             });
             holder.placeReview.setVisibility(View.VISIBLE);
-            switch (postList.get(position).getScore()){
-                case BAD:
-                    holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.bad));
-                    break;
-                case GOOD:
-                    holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.good));
-                    break;
-                case RECOMMEND:
-                    holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.recommend));
-                    break;
+            int score = postList.get(position).getScore();
+            holder.scoreTxt.setText(Integer.toString(score)+".0");
+            if (score > 0 && score <= 1) {
+                holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.bad_rating));
+            } else if (score > 1 && score < 4) {
+                holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.good_rating));
+            } else if (score >= 4 && score <= 5) {
+                holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_fill));
             }
         }
 
@@ -181,7 +179,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage, postImage1, scoreImage;
         ConstraintLayout placeReview;
-        TextView userName, diffTime, postContent, placeName, replyCountTxt, placeNameTxt;
+        TextView userName, diffTime, postContent, placeName, replyCountTxt, placeNameTxt, scoreTxt;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -195,6 +193,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             this.scoreImage = itemView.findViewById(R.id.score_image);
             this.replyCountTxt = itemView.findViewById(R.id.reply_count_txt);
             this.placeNameTxt = itemView.findViewById(R.id.placeName_txt);
+            this.scoreTxt = itemView.findViewById(R.id.score_txt);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

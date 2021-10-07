@@ -93,15 +93,35 @@
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/place_image"
                 app:layout_constraintLeft_toRightOf="@id/placeCategory_image"></TextView>
+<!--            <ImageView-->
+<!--                android:id="@+id/score_image"-->
+<!--                android:layout_width="25dp"-->
+<!--                android:layout_height="25dp"-->
+<!--                android:src="@drawable/bad_avg"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/score_avg"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/place_image"-->
+<!--                android:layout_margin="2dp"></ImageView>-->
+            <TextView
+                android:text="평점: "
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                app:layout_constraintEnd_toStartOf="@id/score_avg"
+                app:layout_constraintTop_toBottomOf="@id/place_image"
+                android:layout_marginTop="10dp"></TextView>
             <TextView
                 android:id="@+id/score_avg"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_marginRight="10dp"
                 android:text="평점"
+                android:textSize="17dp"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/place_image"
-                app:layout_constraintEnd_toEndOf="parent"></TextView>
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"></TextView>
 
             <ImageView
                 android:id="@+id/placeNumber_image"

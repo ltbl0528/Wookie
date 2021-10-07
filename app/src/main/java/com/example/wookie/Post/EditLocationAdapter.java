@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -97,17 +98,20 @@ public class EditLocationAdapter extends RecyclerView.Adapter<EditLocationAdapte
 //                BusProvider.getInstance().post(model);
                 Dialog scoreDialog;
                 TextView placeNameTv;
-                Button cancelDialogBtn, badBtn, goodBtn, recommendBtn;
+                RatingBar ratingBar;
+                Button submitDialogBtn;
+//                badBtn, goodBtn, recommendBtn;
 
                 scoreDialog= new Dialog(view.getContext());
                 scoreDialog.setContentView(R.layout.dialog_score);
 
                 scoreDialog.show();
                 placeNameTv = scoreDialog.findViewById(R.id.place_name);
-                cancelDialogBtn = scoreDialog.findViewById(R.id.cancel_btn);
-                badBtn = scoreDialog.findViewById(R.id.bad_btn);
-                goodBtn = scoreDialog.findViewById(R.id.good_btn);
-                recommendBtn = scoreDialog.findViewById(R.id.recommend_btn);
+                ratingBar = scoreDialog.findViewById(R.id.rating_bar);
+                submitDialogBtn = scoreDialog.findViewById(R.id.submit_btn);
+//                badBtn = scoreDialog.findViewById(R.id.bad_btn);
+//                goodBtn = scoreDialog.findViewById(R.id.good_btn);
+//                recommendBtn = scoreDialog.findViewById(R.id.recommend_btn);
 
                 placeNameTv.setText(model.getPlaceName());
 
@@ -118,21 +122,22 @@ public class EditLocationAdapter extends RecyclerView.Adapter<EditLocationAdapte
                 Post EditPost = ((EditPostActivity)EditPostActivity.mContext).passPost;
                 boolean isNewImg = ((EditPostActivity)EditPostActivity.mContext).passIsImg;
 
-                //취소버튼 클릭 시
-                cancelDialogBtn.setOnClickListener(new View.OnClickListener() {
+                ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                     @Override
-                    public void onClick(View view) {
-                        scoreDialog.dismiss();
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        if(rating<1.0f)
+                            ratingBar.setRating(1.0f);
                     }
                 });
-                // 평가버튼 '나쁨' 선택
-                badBtn.setOnClickListener(new View.OnClickListener() {
+
+                //입력버튼 클릭 시
+                submitDialogBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // bad 이미지로 설정한 후 작성 중인 글에 띄움
-                        score = 1;
+                        score = (int) ratingBar.getRating();
+                        Log.e(TAG, Float.toString(score));
                         isReview = true;
-                        EditPost.setScore(1);
+                        EditPost.setScore(score);
                         EditPost.setReview(true);
                         scoreDialog.dismiss();
                         Intent intent = new Intent(view.getContext(), EditPostActivity.class);
@@ -150,54 +155,79 @@ public class EditLocationAdapter extends RecyclerView.Adapter<EditLocationAdapte
                         view.getContext().startActivity(intent);
                     }
                 });
-                // 평가버튼 '좋음' 선택
-                goodBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        score = 2;
-                        isReview = true;
-                        EditPost.setScore(2);
-                        EditPost.setReview(true);
-                        scoreDialog.dismiss();
-                        Intent intent = new Intent(view.getContext(), EditPostActivity.class);
-                        intent.putExtra("post", (Serializable) EditPost);
-                        intent.putExtra("placeInfo", model);
-                        intent.putExtra("score", score);
-                        intent.putExtra("isReview", isReview);
-                        intent.putExtra("editTxt", editText);
-                        intent.putExtra("groupId", groupID);
-                        intent.putExtra("postId", postID);
-                        intent.putExtra("imgUri", imgUri);
-                        intent.putExtra("isNewImg", isNewImg);
-                        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
-                        Log.e(TAG, "score2");
-                        view.getContext().startActivity(intent);
-                    }
-                });
-                // 평가버튼 '추천' 선택
-                recommendBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        score = 3;
-                        isReview = true;
-                        EditPost.setScore(3);
-                        EditPost.setReview(true);
-                        scoreDialog.dismiss();
-                        Intent intent = new Intent(view.getContext(), EditPostActivity.class);
-                        intent.putExtra("placeInfo", model);
-                        intent.putExtra("score", score);
-                        intent.putExtra("isReview", isReview);
-                        intent.putExtra("editTxt", editText);
-                        intent.putExtra("groupId", groupID);
-                        intent.putExtra("postId", postID);
-                        intent.putExtra("imgUri", imgUri);
-                        intent.putExtra("post", (Serializable) EditPost);
-                        intent.putExtra("isNewImg", isNewImg);
-                        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
-                        Log.e(TAG, "score3");
-                        view.getContext().startActivity(intent);
-                    }
-                });
+                // 평가버튼 '나쁨' 선택
+//                badBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        // bad 이미지로 설정한 후 작성 중인 글에 띄움
+//                        score = 1;
+//                        isReview = true;
+//                        EditPost.setScore(1);
+//                        EditPost.setReview(true);
+//                        scoreDialog.dismiss();
+//                        Intent intent = new Intent(view.getContext(), EditPostActivity.class);
+//                        intent.putExtra("post", (Serializable) EditPost);
+//                        intent.putExtra("placeInfo", model);
+//                        intent.putExtra("score", score);
+//                        intent.putExtra("isReview", isReview);
+//                        intent.putExtra("editTxt", editText);
+//                        intent.putExtra("groupId", groupID);
+//                        intent.putExtra("postId", postID);
+//                        intent.putExtra("imgUri", imgUri);
+//                        intent.putExtra("isNewImg", isNewImg);
+//                        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+//                        Log.e(TAG, "score1");
+//                        view.getContext().startActivity(intent);
+//                    }
+//                });
+//                // 평가버튼 '좋음' 선택
+//                goodBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        score = 2;
+//                        isReview = true;
+//                        EditPost.setScore(2);
+//                        EditPost.setReview(true);
+//                        scoreDialog.dismiss();
+//                        Intent intent = new Intent(view.getContext(), EditPostActivity.class);
+//                        intent.putExtra("post", (Serializable) EditPost);
+//                        intent.putExtra("placeInfo", model);
+//                        intent.putExtra("score", score);
+//                        intent.putExtra("isReview", isReview);
+//                        intent.putExtra("editTxt", editText);
+//                        intent.putExtra("groupId", groupID);
+//                        intent.putExtra("postId", postID);
+//                        intent.putExtra("imgUri", imgUri);
+//                        intent.putExtra("isNewImg", isNewImg);
+//                        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+//                        Log.e(TAG, "score2");
+//                        view.getContext().startActivity(intent);
+//                    }
+//                });
+//                // 평가버튼 '추천' 선택
+//                recommendBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        score = 3;
+//                        isReview = true;
+//                        EditPost.setScore(3);
+//                        EditPost.setReview(true);
+//                        scoreDialog.dismiss();
+//                        Intent intent = new Intent(view.getContext(), EditPostActivity.class);
+//                        intent.putExtra("placeInfo", model);
+//                        intent.putExtra("score", score);
+//                        intent.putExtra("isReview", isReview);
+//                        intent.putExtra("editTxt", editText);
+//                        intent.putExtra("groupId", groupID);
+//                        intent.putExtra("postId", postID);
+//                        intent.putExtra("imgUri", imgUri);
+//                        intent.putExtra("post", (Serializable) EditPost);
+//                        intent.putExtra("isNewImg", isNewImg);
+//                        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+//                        Log.e(TAG, "score3");
+//                        view.getContext().startActivity(intent);
+//                    }
+//                });
             }
         });
     }

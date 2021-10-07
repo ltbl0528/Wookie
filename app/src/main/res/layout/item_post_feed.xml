@@ -89,9 +89,19 @@
                     android:id="@+id/score_image"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/bad"
-                    app:layout_constraintStart_toEndOf="@id/placeName_txt"
-                    app:layout_constraintTop_toTopOf="parent"></ImageView>
+                    android:src="@drawable/bad_rating"
+                    app:layout_constraintEnd_toStartOf="@id/score_txt"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_margin="2dp"></ImageView>
+                <TextView
+                    android:id="@+id/score_txt"
+                    android:text="3.0"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_margin="2dp"></TextView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View

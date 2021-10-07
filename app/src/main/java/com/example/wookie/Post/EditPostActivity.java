@@ -58,9 +58,9 @@ import kotlin.jvm.functions.Function2;
 public class EditPostActivity extends AppCompatActivity {
 
     private String TAG = "EditPostActivity";
-    private TextView topBarTxt;
+    private TextView topBarTxt, scoreText;
     private Button cancelBtn, selectImgBtn, selectPlaceBtn;
-    private TextView postSubmitBtn, placeName;;
+    private TextView postSubmitBtn, placeName;
     private EditText postEditTxt;
     private RelativeLayout postImgLayout;
     private ImageView postImg1;
@@ -78,7 +78,7 @@ public class EditPostActivity extends AppCompatActivity {
     private Post post;
     private Document placeInfo = new Document();
 
-    private static final int BAD=1, GOOD=2, RECOMMEND=3;
+//    private static final int BAD=1, GOOD=2, RECOMMEND=3;
     private ConstraintLayout placeReview;
     private ImageView deletePlaceBtn;
     private Dialog scoreDialog;
@@ -97,6 +97,7 @@ public class EditPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_write);
 
         topBarTxt = findViewById(R.id.topBar_txt);
+        scoreText = findViewById(R.id.score_txt);
         cancelBtn = findViewById(R.id.cancel_btn);
         postSubmitBtn = findViewById(R.id.post_submit_btn);
         selectImgBtn = findViewById(R.id.select_image_btn);
@@ -148,28 +149,22 @@ public class EditPostActivity extends AppCompatActivity {
 
             if(placeInfo.getPlaceName() != null){
                 placeName.setText(placeInfo.getPlaceName());
-                switch (score){
-                    case BAD:
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(1);
-                        post.setReview(isReview);
-                        break;
-                    case GOOD:
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.good));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(2);
-                        post.setReview(isReview);
-                        break;
-                    case RECOMMEND:
-                        scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
-                        placeReview.setVisibility(View.VISIBLE);
-                        post.setScore(3);
-                        post.setReview(isReview);
-                        break;
-                    default:
-                        break;
-
+                scoreText.setText(Integer.toString(score)+".0");
+                if (score > 0 && score <= 1) {
+                    scoreImg.setImageDrawable(getDrawable(R.drawable.bad_rating));
+                    placeReview.setVisibility(View.VISIBLE);
+                    post.setScore(score);
+                    post.setReview(isReview);
+                } else if (score > 1 && score < 4) {
+                    scoreImg.setImageDrawable(getDrawable(R.drawable.good_rating));
+                    placeReview.setVisibility(View.VISIBLE);
+                    post.setScore(score);
+                    post.setReview(isReview);
+                } else if (score >= 4 && score <= 5) {
+                    scoreImg.setImageDrawable(getDrawable(R.drawable.ic_rating_fill));
+                    placeReview.setVisibility(View.VISIBLE);
+                    post.setScore(score);
+                    post.setReview(isReview);
                 }
             }
         }
@@ -341,19 +336,14 @@ public class EditPostActivity extends AppCompatActivity {
                         isReView = true;
                         placeReview.setVisibility(View.VISIBLE);
                         setPlaceNameTxt(groupId, postId);
-                        switch (post.getScore()){
-                            case BAD:
-//                                post.setScore(BAD);
-                                scoreImg.setImageDrawable(getDrawable(R.drawable.bad));
-                                break;
-                            case GOOD:
-//                                post.setScore(GOOD);
-                                scoreImg.setImageDrawable(getDrawable(R.drawable.good));
-                                break;
-                            case RECOMMEND:
-//                                post.setScore(RECOMMEND);
-                                scoreImg.setImageDrawable(getDrawable(R.drawable.recommend));
-                                break;
+                        int score = post.getScore();
+                        scoreText.setText(Integer.toString(score)+".0");
+                        if (score > 0 && score <= 1) {
+                            scoreImg.setImageDrawable(getDrawable(R.drawable.bad_rating));
+                        } else if (score > 1 && score < 4) {
+                            scoreImg.setImageDrawable(getDrawable(R.drawable.good_rating));
+                        } else if (score >= 4 && score <= 5) {
+                            scoreImg.setImageDrawable(getDrawable(R.drawable.ic_rating_fill));
                         }
                     }
 
