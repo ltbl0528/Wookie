@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="8dp">
+        <ImageView
+            android:id="@+id/gallery_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/logo_clear"></ImageView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#77656565"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="@id/gallery_image"
+            app:layout_constraintRight_toRightOf="@id/gallery_image"
+            app:layout_constraintBottom_toBottomOf="@id/gallery_image"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
+            <TextView
+                android:id="@+id/post_user_name_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:shadowColor="#000"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="6"
+                android:text="작성자"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:gravity="center"></TextView>
+            <TextView
+                android:id="@+id/post_date_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2021.10.07 14:42"
+                android:textColor="#FFF"
+                android:textSize="13dp"
+                android:shadowColor="#000"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="6"
+                android:gravity="center"></TextView>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>
