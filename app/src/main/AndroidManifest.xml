@@ -35,7 +35,6 @@
         <activity android:name=".Post.ReadPostActivity"></activity>
         <activity android:name=".Post.SelectPlaceActivity"></activity>
         <activity android:name=".Group.MakeGroupActivity"></activity>
-        <activity android:name=".Map.SearchPlaceActivity"></activity>
         <activity android:name=".Map.ShowMapActivity"></activity>
 
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">

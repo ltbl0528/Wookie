@@ -1,7 +1,11 @@
 package com.example.wookie.MyPage;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -18,10 +24,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wookie.Feed.FeedActivity;
 import com.example.wookie.Feed.PostAdapter;
 import com.example.wookie.Group.GroupListActivity;
 import com.example.wookie.LoginActivity;
 import com.example.wookie.Models.Post;
+import com.example.wookie.Post.EditPostActivity;
 import com.example.wookie.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +43,7 @@ import com.kakao.sdk.user.model.User;
 import java.util.ArrayList;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
 
 public class MyPageActivity extends Fragment {
@@ -43,7 +52,7 @@ public class MyPageActivity extends Fragment {
     private View view;
     private ImageView userImageView;
     private TextView userNameTxt, postCntTxt;
-    private Button myMapBtn;
+    private Button myMapBtn, logOutBtn;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -64,6 +73,7 @@ public class MyPageActivity extends Fragment {
         view = inflater.inflate(R.layout.activity_mypage, container, false);
 
         myMapBtn = view.findViewById(R.id.my_map_btn);
+        logOutBtn = view.findViewById(R.id.logout_btn);
         userImageView = view.findViewById(R.id.user_image);
         userNameTxt = view.findViewById(R.id.user_name);
         postCntTxt = view.findViewById(R.id.post_count);
@@ -95,6 +105,45 @@ public class MyPageActivity extends Fragment {
                 myMapActivity.setArguments(bundle);
                 transaction.replace(R.id.main_frame, myMapActivity);
                 transaction.commit(); //fragment 상태 저장
+            }
+        });
+        // 로그아웃 버튼
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                alertDialog.setTitle("로그아웃");
+                alertDialog.setMessage("정말 로그아웃 하시겠습니까?");
+                // 권한설정 클릭 시 이벤트 발생
+                alertDialog.setPositiveButton("로그아웃",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                UserApiClient.getInstance().logout(new Function1<Throwable, Unit>() {
+                                    @Override
+                                    public Unit invoke(Throwable throwable) {
+                                        if (throwable != null) {
+                                            Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", throwable);
+                                        }
+                                        else {
+                                            Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨");
+                                            ActivityCompat.finishAffinity(getActivity());
+                                            Intent intent = new Intent(view.getContext(), LoginActivity.class);
+                                            view.getContext().startActivity(intent);
+                                        }
+                                        return null;
+                                    }
+                                });
+                            }
+                        });
+                //취소
+                alertDialog.setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
             }
         });
 
