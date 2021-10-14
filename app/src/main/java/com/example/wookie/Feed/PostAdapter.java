@@ -2,6 +2,7 @@ package com.example.wookie.Feed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+    private String TAG = "PostAdapter";
     private ArrayList<Post> postList;
     private Context context;
     private static final int BAD=1, GOOD=2, RECOMMEND=3;
@@ -52,7 +54,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public PostAdapter.PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_feed, parent, false);
         PostViewHolder holder = new PostViewHolder(view);
-        holder.setIsRecyclable(false);
 
         return holder;
     }
@@ -88,6 +89,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             Glide.with(context).load(postList.get(position).getPostImg())
                     .transform(new CenterCrop(),new RoundedCorners(25)).into(holder.postImage1);
         }
+        else{
+            holder.postImage1.setVisibility(View.GONE);
+        }
 
         // 리뷰 장소, 평점 설정
         if(postList.get(position).isReview()){
@@ -115,6 +119,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.scoreImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_fill));
             }
         }
+        else{
+            holder.placeReview.setVisibility(View.GONE);
+        }
 
         // 댓글 개수 설정
         DatabaseReference reference = database.getReference("reply").child(postList.get(position).getGroupId());
@@ -124,18 +131,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int replyCount = 0;
                 if(dataSnapshot.exists()){
-
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         replyCount++;
                     }
-
                 }
                 holder.replyCountTxt.setText("댓글 " + replyCount + "개");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e(TAG, error.toString());
             }
         });
     }
