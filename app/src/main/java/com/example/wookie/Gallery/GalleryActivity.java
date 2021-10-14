@@ -57,9 +57,7 @@ public class GalleryActivity extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
-//        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL)); // 구분선 추가
         layoutManager = new GridLayoutManager(this.getContext(), 3);
-//        ((GridLayoutManager) layoutManager).setReverseLayout(true);
 
         recyclerView.setLayoutManager(layoutManager);
 
@@ -87,6 +85,7 @@ public class GalleryActivity extends Fragment {
                             postList.add(post);
                         }
                     }
+                    Collections.reverse(postList); // 최신순으로 정렬
                     adapter.notifyDataSetChanged();
                 }
             }
