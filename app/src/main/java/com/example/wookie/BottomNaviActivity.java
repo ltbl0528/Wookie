@@ -2,6 +2,7 @@ package com.example.wookie;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -33,6 +34,7 @@ public class BottomNaviActivity extends AppCompatActivity {
     private GalleryActivity galleryActivity;
     private MyPageActivity myPageActivity;
 
+    private int actionBarHeight = 0;
     private FloatingActionButton writeBtn;
 
     @Override
@@ -44,6 +46,14 @@ public class BottomNaviActivity extends AppCompatActivity {
         writeBtn = findViewById(R.id.write);
         FrameLayout mf = findViewById(R.id.main_frame);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mf.getLayoutParams();
+
+        // 하단 ActionBar (bottomNavigation) 높이 저장
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+
+        }
 
         final String groupId = getIntent().getStringExtra("groupId");
 
@@ -66,6 +76,8 @@ public class BottomNaviActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.feed:
                         setFrag(0);
+                        layoutParams.bottomMargin = actionBarHeight;
+                        mf.setLayoutParams(layoutParams);
                         break;
                     case R.id.map:
                         setFrag(1);
@@ -77,6 +89,8 @@ public class BottomNaviActivity extends AppCompatActivity {
                         break;
                     case R.id.gallery:
                         setFrag(3);
+                        layoutParams.bottomMargin = actionBarHeight;
+                        mf.setLayoutParams(layoutParams);
                         break;
                     case R.id.mypage:
                         setFrag(4);
@@ -95,6 +109,7 @@ public class BottomNaviActivity extends AppCompatActivity {
 
         setFrag(0); //첫 fragment 화면 뭘로 지정할 건지 선택
     }
+
     //fragment 교체가 일어나는 실행문
     private void setFrag(int n){
 
