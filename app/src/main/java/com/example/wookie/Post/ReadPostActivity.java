@@ -130,9 +130,9 @@ public class ReadPostActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
-                intent.putExtra("groupId", groupId);
-                startActivity(intent);
+//                Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
+//                intent.putExtra("groupId", groupId);
+//                startActivity(intent);
                 finish();
             }
         });

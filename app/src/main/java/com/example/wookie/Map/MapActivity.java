@@ -416,22 +416,6 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
 
     }
 
-    // 길찾기 카카오맵 호출( 카카오맵앱이 없을 경우 플레이스토어 링크로 이동)
-    public void showMap(Uri geoLocation) {
-        Intent intent;
-        try {
-            Toast.makeText(getActivity().getApplicationContext(), "카카오맵으로 길찾기를 시도합니다.", Toast.LENGTH_SHORT).show();
-            intent = new Intent(Intent.ACTION_VIEW, geoLocation);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } catch (Exception e) {
-            Toast.makeText(getActivity().getApplicationContext(), "카카오맵이 설치되어있지 않습니다. 스토어에서 설치해주세요.", Toast.LENGTH_LONG).show();
-            intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://play.google.com/store/apps/details?id=net.daum.android.map&hl=ko"));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-    }
-
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
     }

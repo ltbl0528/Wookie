@@ -38,4 +38,9 @@
         <item name="android:maxHeight">47dip</item>
     </style>
 
+    <style name="MyCustomTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
 </resources>

@@ -21,12 +21,13 @@
         android:supportsRtl="true"
         android:name=".KakaoApplication"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity android:name=".Group.GroupListActivity"></activity>
         <activity android:name=".BottomNaviActivity"></activity>
         <activity android:name=".Post.WritePostActivity"></activity>

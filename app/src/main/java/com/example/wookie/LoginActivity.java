@@ -1,6 +1,5 @@
 package com.example.wookie;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 //                    intent.putExtra("uName", userName);
 //                    intent.putExtra("uProfile", userProfile);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.fadein, R.anim.fadeout);
                     finish();
                     Log.e(TAG, "성공");
                 }
