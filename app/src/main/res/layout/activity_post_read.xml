@@ -227,7 +227,7 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_baseline_send_24"
             android:background="#B59BFF"
-            android:padding="5dp"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

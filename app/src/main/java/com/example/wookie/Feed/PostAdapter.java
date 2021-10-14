@@ -35,6 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static java.security.AccessController.getContext;
+
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private String TAG = "PostAdapter";
     private ArrayList<Post> postList;
@@ -211,6 +213,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     intent.putExtra("groupId", groupId);
                     intent.putExtra("postId", postId);
                     itemView.getContext().startActivity(intent);
+                    ((BottomNaviActivity)itemView.getContext()).overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                     //TODO: readpostactivity에서 이전 액티비티에 따라 다른 화면 뜨게 만들기
 //                    ((BottomNaviActivity)itemView.getContext()).finish();
                 }

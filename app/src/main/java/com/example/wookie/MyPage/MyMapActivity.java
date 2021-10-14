@@ -64,7 +64,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyMapActivity extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener, MapView.CurrentLocationEventListener {
+public class MyMapActivity extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener,
+        MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener, MapView.CurrentLocationEventListener {
 
     private String TAG = "MyMapActivity";
     private static final int LOCATION_PERMISSION = 1004; //권한 변수

@@ -237,5 +237,10 @@ public class PlaceDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
+    }
     //TODO: onBackPressed 이전 액티비티에 따라 다르게 설정
 }

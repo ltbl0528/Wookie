@@ -69,7 +69,7 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
     MapView mMapView;
     ViewGroup mMapViewContainer;
     EditText mSearchEdit;
-    private FloatingActionButton fab1, fab2;
+    private FloatingActionButton fab1, fab2, fabStat;
     RelativeLayout mLoaderLayout;
     RecyclerView recyclerView;
 
@@ -122,6 +122,7 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         mSearchEdit = view.findViewById(R.id.search_txt);
         fab1 = view.findViewById(R.id.fab1);
         fab2 = view.findViewById(R.id.fab2);
+        fabStat = view.findViewById(R.id.fab_stat);
         mLoaderLayout = view.findViewById(R.id.loaderLayout);
         mMapView = new MapView(view.getContext());
         mMapViewContainer = view.findViewById(R.id.map_mv_mapcontainer);
@@ -141,6 +142,7 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         //버튼리스너
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
+        fabStat.setOnClickListener(this);
 
         Toast.makeText(view.getContext(), "맵을 로딩중입니다", Toast.LENGTH_SHORT).show();
 
@@ -303,13 +305,16 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                     isClickedOne = true;
                 }
                 break;
+            case R.id.fab_stat:
+                Intent detailIntent = new Intent(getContext(), MapSearchDetailActivity.class);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA1, reviewArrayList);
+                getActivity().overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
+                startActivity(detailIntent);
         }
     }
 
     private void requestSearchLocal(double x, double y) {
         groupId = getActivity().getIntent().getStringExtra("groupId");
-
-        reviewArrayList.clear();
         postList.clear();
         pinList.clear();
 
@@ -327,6 +332,7 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.exists()){
+                                    reviewArrayList.clear();
                                     for(DataSnapshot dataSnapshot1 : snapshot.getChildren()){
                                         Document document = dataSnapshot1.getValue(Document.class);
                                         reviewArrayList.add(document);
@@ -479,6 +485,9 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
      */
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
+        fab1.setEnabled(false);
+        fab2.setEnabled(false);
+        fabStat.setEnabled(false);
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
@@ -494,6 +503,9 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
         mLoaderLayout.setVisibility(View.GONE);
+        fab1.setEnabled(true);
+        fab2.setEnabled(true);
+        fabStat.setEnabled(true);
         //트래킹 모드가 아닌 단순 현재위치 업데이트일 경우, 한번만 위치 업데이트하고 트래킹을 중단시키기 위한 로직
         if (!isTrackingMode) {
             mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);

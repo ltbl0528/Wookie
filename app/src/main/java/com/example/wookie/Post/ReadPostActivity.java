@@ -133,6 +133,7 @@ public class ReadPostActivity extends AppCompatActivity {
 //                Intent intent = new Intent(getApplicationContext(), BottomNaviActivity.class);
 //                intent.putExtra("groupId", groupId);
 //                startActivity(intent);
+                overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
                 finish();
             }
         });
@@ -384,4 +385,9 @@ public class ReadPostActivity extends AppCompatActivity {
 //        startActivity(intent);
 //        finish();
 //    }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+    }
 }
