@@ -144,6 +144,10 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
         fab2.setOnClickListener(this);
         fabStat.setOnClickListener(this);
 
+        fab1.setEnabled(false);
+        fab2.setEnabled(false);
+        fabStat.setEnabled(false);
+
         Toast.makeText(view.getContext(), "맵을 로딩중입니다", Toast.LENGTH_SHORT).show();
 
         //맵 리스너 (현재위치 업데이트)
@@ -485,9 +489,6 @@ public class MapActivity extends Fragment implements MapView.MapViewEventListene
      */
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
-        fab1.setEnabled(false);
-        fab2.setEnabled(false);
-        fabStat.setEnabled(false);
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
