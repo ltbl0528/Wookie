@@ -263,7 +263,7 @@ public class WritePostActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(WritePostActivity.this, SelectPlaceActivity.class);
-                if(postImg1.getVisibility() == View.VISIBLE){
+                if(postImgLayout.getVisibility() == View.VISIBLE){
                     passUri = imageUri;
                 }
                 if(!postEditTxt.getText().toString().trim().isEmpty()){
