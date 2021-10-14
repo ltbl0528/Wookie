@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.example.wookie.Feed.PostAdapter;
+import com.example.wookie.Feed.PlaceFeedActivity;
+import com.example.wookie.Feed.PostShortAdapter;
 import com.example.wookie.Models.Document;
 import com.example.wookie.Models.Pin;
 import com.example.wookie.Models.Post;
@@ -32,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PlaceDetailActivity extends AppCompatActivity {
     private String TAG = "PlaceDetailActivity";
@@ -40,6 +41,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
     private ImageView pinBtn; //scoreImage;
     private String groupId, userId;
     private ImageView imageView;
+    private TextView showMorePostBtn;
 
     private double lat, lng;
     private double mCurrentLat, mCurrentLng;
@@ -69,6 +71,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         findPathBtn = findViewById(R.id.find_path_button);
         backBtn = findViewById(R.id.back_btn);
         recyclerView = findViewById(R.id.recyclerView);
+        showMorePostBtn = findViewById(R.id.show_more_post_button);
         processIntent();
     }
 
@@ -86,9 +89,6 @@ public class PlaceDetailActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL)); // 구분선 추가
         layoutManager = new LinearLayoutManager(this);
-        // 내림차순으로 정렬
-        ((LinearLayoutManager) layoutManager).setReverseLayout(true);
-        ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         String placeId = document.getId();
@@ -142,6 +142,18 @@ public class PlaceDetailActivity extends AppCompatActivity {
             }
         });
 
+        showMorePostBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), PlaceFeedActivity.class);
+                intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, document);
+                intent.putExtra("groupId", groupId);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +202,12 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
                     scoreAvgText.setText(Float.toString(avg));
                     postCnt.setText("포스트 " + postList.size()+"개");
+
+                    if (postList.size()>3){
+                        showMorePostBtn.setVisibility(View.VISIBLE);
+                    }
+
+                    Collections.reverse(postList); // 최신순으로 정렬
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -200,7 +218,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new PostAdapter(postList, this);
+        adapter = new PostShortAdapter(postList, this);
         recyclerView.setAdapter(adapter);
     }
 
