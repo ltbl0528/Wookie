@@ -25,7 +25,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.PostViewHolder> {
     private String TAG = "GalleryAdapter";
@@ -71,10 +74,21 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.PostView
         });
 
         // 작성일 설정
-        holder.postDateTxt.setText(postList.get(position).getPostDate());
+        holder.postDateTxt.setText(parseDate(postList.get(position).getPostDate()));
         // 이미지 설정
         Glide.with(context).load(postList.get(position).getPostImg())
                 .transform(new CenterCrop(), new RoundedCorners(1)).into(holder.galleryImage);
+    }
+
+    // 분(minute)까지만 표시
+    private String parseDate(String date) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+        Date oldDate = inputFormat.parse(date, new ParsePosition(0));
+        String newDate = outputFormat.format(oldDate);
+
+        return newDate;
     }
 
     @Override

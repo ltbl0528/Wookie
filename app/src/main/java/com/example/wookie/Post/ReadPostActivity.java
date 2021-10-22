@@ -43,9 +43,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -278,7 +280,7 @@ public class ReadPostActivity extends AppCompatActivity {
                     String userId = post.getUserId();
                     setPostUser(userId); // 글 작성자 프로필사진, 이름 설정
                     setEditDelBtn(userId); // 글 수정버튼 설정
-                    postDate.setText(post.getPostDate()); // 글 작성날짜 설정
+                    postDate.setText(parseDate(post.getPostDate())); // 글 작성날짜 설정
                     postContent.setText(post.getContext()); // 글 내용 설정
                     if(!(post.getPostImg().equals("null"))){ // 글 이미지 설정
                         postImage1.setVisibility(View.VISIBLE);
@@ -335,6 +337,17 @@ public class ReadPostActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // 분(minute)까지만 표시
+    private String parseDate(String date) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+        Date oldDate = inputFormat.parse(date, new ParsePosition(0));
+        String newDate = outputFormat.format(oldDate);
+
+        return newDate;
     }
 
     // 본인 작성글일 경우 글수정 버튼 보이게 설정
