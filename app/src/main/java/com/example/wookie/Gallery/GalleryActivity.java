@@ -35,7 +35,7 @@ public class GalleryActivity extends Fragment {
 
     private String TAG = "GalleryActivity";
     private View view;
-    private TextView groupNameTxt;
+    private TextView groupNameTxt, photoNoneTxt;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -54,6 +54,7 @@ public class GalleryActivity extends Fragment {
         view = inflater.inflate(R.layout.activity_gallery, container, false);
 
         groupNameTxt = view.findViewById(R.id.group_name);
+        photoNoneTxt = view.findViewById(R.id.photo_none_txt);
         recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -87,6 +88,9 @@ public class GalleryActivity extends Fragment {
                     }
                     Collections.reverse(postList); // 최신순으로 정렬
                     adapter.notifyDataSetChanged();
+                }
+                else{
+                    photoNoneTxt.setVisibility(View.VISIBLE);
                 }
             }
 

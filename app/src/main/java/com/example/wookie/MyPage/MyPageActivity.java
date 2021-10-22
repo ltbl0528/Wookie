@@ -51,7 +51,7 @@ public class MyPageActivity extends Fragment {
     private String TAG = "MyPageActivity";
     private View view;
     private ImageView userImageView;
-    private TextView userNameTxt, postCntTxt;
+    private TextView userNameTxt, postCntTxt, postNoneTxt;
     private Button myMapBtn, logOutBtn;
 
     private RecyclerView recyclerView;
@@ -77,6 +77,7 @@ public class MyPageActivity extends Fragment {
         userImageView = view.findViewById(R.id.user_image);
         userNameTxt = view.findViewById(R.id.user_name);
         postCntTxt = view.findViewById(R.id.post_count);
+        postNoneTxt = view.findViewById(R.id.post_none_txt);
         recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -190,6 +191,9 @@ public class MyPageActivity extends Fragment {
                     }
                     postCntTxt.setText("작성글 " + postList.size());
                     adapter.notifyDataSetChanged();
+                }
+                else {
+                    postNoneTxt.setVisibility(View.VISIBLE);
                 }
             }
 

@@ -34,7 +34,16 @@
 <!--        android:text="2021년 9월"-->
 <!--        android:textSize="20dp"-->
 <!--        android:layout_marginLeft="10dp"></TextView>-->
-
+    <TextView
+        android:id="@+id/photo_none_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="아직 앨범에 추가된 사진이 없습니다."
+        android:textSize="18dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:visibility="gone">
+    </TextView>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
