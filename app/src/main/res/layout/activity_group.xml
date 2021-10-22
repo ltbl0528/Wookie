@@ -30,6 +30,7 @@
             android:background="@android:color/transparent"
             android:text="그룹 추가"
             android:textSize="18dp"
+            android:fontFamily="@font/pretendarmedium"
             android:textAlignment="viewStart"
             android:layout_marginLeft="4dp"></Button>
     </LinearLayout>
