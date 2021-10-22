@@ -67,12 +67,12 @@
                             android:layout_height="50dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:src="@drawable/cat_face"></ImageView>
+                            android:src="@drawable/profile_default"></ImageView>
                         <TextView
                             android:id="@+id/user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="이혜인"
+                            android:text=""
                             android:textSize="20dp"
                             android:textStyle="bold"
                             android:textColor="#353535"
@@ -96,7 +96,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:text="2021.09.13 13:00"
+                            android:text="2021.01.01 00:00"
                             android:textSize="14dp"
                             app:layout_constraintStart_toEndOf="@id/user_image"
                             app:layout_constraintTop_toBottomOf="@id/user_name"></TextView>
@@ -106,7 +106,7 @@
                         android:id="@+id/post_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="어제 먹었던 부리또 너무 맛있었어! 다음에 또 가자~!"
+                        android:text=""
                         android:textSize="20dp"
                         android:textColor="#353535"
                         android:layout_margin="10dp"></TextView>
@@ -138,7 +138,7 @@
                                 android:id="@+id/placeName_txt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="반올림피자샵 동탄점"
+                                android:text=""
                                 app:layout_constraintStart_toEndOf="@id/marker_image"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"></TextView>
@@ -164,7 +164,7 @@
                             android:id="@+id/placeAddress_txt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="경기도 화성시 반송동 XX-XX"
+                            android:text=""
                             android:textSize="12dp"
                             android:layout_marginLeft="25dp"></TextView>
                     </LinearLayout>

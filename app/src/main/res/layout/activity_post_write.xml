@@ -120,7 +120,7 @@
                         android:id="@+id/placeName_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="반올림피자샵 동탄점"
+                        android:text="가게명"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/marker_image"
                         app:layout_constraintTop_toTopOf="parent"></TextView>
@@ -134,7 +134,7 @@
                         android:layout_margin="2dp"></ImageView>
                     <TextView
                         android:id="@+id/score_txt"
-                        android:text="3.0"
+                        android:text="5.0"
                         android:textSize="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
