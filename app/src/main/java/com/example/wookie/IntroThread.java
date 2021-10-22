@@ -16,7 +16,7 @@ public class IntroThread extends Thread {
         Message msg = new Message();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
             msg.what = 1;
             handler.sendEmptyMessage(msg.what);
         } catch (Exception e) {

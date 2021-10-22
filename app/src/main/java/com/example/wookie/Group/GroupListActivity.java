@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ import kotlin.jvm.functions.Function2;
 public class GroupListActivity extends AppCompatActivity {
 
     private String TAG = "GroupListActivity";
+    private TextView groupNoneText, groupNoneText2;
     private Button addGroupBtn, enterDialogBtn, codeMenuBtn, groupMakeMenuBtn, cancelBtn, cancelBtn2;
     private EditText groupCodeInput, groupPwdInput;
     private String userLoginId;
@@ -56,6 +58,8 @@ public class GroupListActivity extends AppCompatActivity {
 
 //        enterBtn = findViewById(R.id.enter_btn);
         addGroupBtn = findViewById(R.id.add_group_btn);
+        groupNoneText = findViewById(R.id.group_none_txt);
+        groupNoneText2 = findViewById(R.id.group_none_txt2);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -120,6 +124,9 @@ public class GroupListActivity extends AppCompatActivity {
                     });
                 } else {
                     Toast.makeText(GroupListActivity.this, "가입된 방 없음", Toast.LENGTH_LONG).show();
+                    groupNoneText.setVisibility(View.VISIBLE);
+                    groupNoneText2.setVisibility(View.VISIBLE);
+
                 }
             }
             @Override

@@ -44,7 +44,7 @@ public class FeedActivity extends Fragment {
 
     private String TAG = "FeedActivity";
     private View view;
-    private TextView groupNameTxt;
+    private TextView groupNameTxt, postNoneTxt;
     private ImageButton addUserBtn;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -65,6 +65,7 @@ public class FeedActivity extends Fragment {
         view = inflater.inflate(R.layout.activity_feed, container, false);
 
         groupNameTxt = view.findViewById(R.id.group_name);
+        postNoneTxt = view.findViewById(R.id.post_none_txt);
         addUserBtn = view.findViewById(R.id.add_user_btn);
         recyclerView = view.findViewById(R.id.recyclerView);
 
@@ -136,6 +137,9 @@ public class FeedActivity extends Fragment {
                         postList.add(post);
                     }
                     adapter.notifyDataSetChanged();
+                }
+                else{
+                    postNoneTxt.setVisibility(View.VISIBLE);
                 }
             }
 

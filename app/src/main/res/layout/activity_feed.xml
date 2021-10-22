@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="그룹 이름"
+            android:text=" "
             android:textSize="22dp"
             android:textStyle="bold"
             android:textColor="#353535"
@@ -50,7 +50,17 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#A5A5A5"></View>
-
+    <TextView
+        android:id="@+id/post_none_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="아직 포스트가 없습니다."
+        android:textSize="18dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:visibility="gone">
+    </TextView>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

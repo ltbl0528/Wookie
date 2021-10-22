@@ -36,7 +36,7 @@ import java.util.Collections;
 
 public class PlaceDetailActivity extends AppCompatActivity {
     private String TAG = "PlaceDetailActivity";
-    private TextView placeNameText, addressText, categoryText, phoneText, postCnt, scoreAvgText;
+    private TextView placeNameText, addressText, categoryText, phoneText, postCnt, scoreAvgText, postNoneText;
     private Button backBtn, findPathBtn;
     private ImageView pinBtn; //scoreImage;
     private String groupId, userId;
@@ -61,6 +61,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         placeNameText = findViewById(R.id.placeName_txt);
         addressText = findViewById(R.id.placeAddress_txt);
         categoryText = findViewById(R.id.placeCategory_txt);
+        postNoneText = findViewById(R.id.post_none_txt);
         scoreAvgText = findViewById(R.id.score_avg);
 //        urlText = findViewById(R.id.placedetail_tv_url);
         phoneText = findViewById(R.id.placeNumber_txt);
@@ -203,7 +204,10 @@ public class PlaceDetailActivity extends AppCompatActivity {
                     scoreAvgText.setText(Float.toString(avg));
                     postCnt.setText("포스트 " + postList.size()+"개");
 
-                    if (postList.size()>3){
+                    if(postList.size() > 0){
+                        postNoneText.setVisibility(View.GONE);
+                    }
+                    else if (postList.size()>3){
                         showMorePostBtn.setVisibility(View.VISIBLE);
                     }
 
