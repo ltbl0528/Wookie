@@ -1,6 +1,7 @@
 package com.example.wookie.Post;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -64,7 +65,10 @@ public class ReadPostActivity extends AppCompatActivity {
     private Dialog editDelDialog;
     private Button postEditBtn, postDelBtn;
 
+    public static Context mContext;
+
     private String userLoginId;
+    public String passUserLoginId;
     private TextView replyCountTxt;
     private ConstraintLayout replyTxtLayout;
     private EditText replyEditTxt;
@@ -79,6 +83,8 @@ public class ReadPostActivity extends AppCompatActivity {
     //    private FirebaseStorage storage;
 //    private StorageReference storageReference;
     private NestedScrollView nestedScrollView;
+
+    private String imageUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,12 +109,14 @@ public class ReadPostActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         nestedScrollView = findViewById(R.id.ScrollView);
 
+        mContext = this;
+
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL)); // 구분선 추가
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // PostAdapter에서 넘겨받은 값
+        // PostAdapter, ReplyAdapter 에서 넘겨받은 값
         final String groupId = getIntent().getStringExtra("groupId");
         final String postId = getIntent().getStringExtra("postId");
 
@@ -121,11 +129,21 @@ public class ReadPostActivity extends AppCompatActivity {
             public Unit invoke(User user, Throwable throwable) {
                 if (user != null){//로그인 되면
                     userLoginId = String.valueOf(user.getId());
+                    passUserLoginId = userLoginId;
                 }
                 else{
                     Log.e(TAG, throwable.toString());
                 }
                 return null;
+            }
+        });
+
+        postImage1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ShowImgFullActivity.class);
+                intent.putExtra("imageUrl", imageUrl);
+                startActivity(intent);
             }
         });
 
@@ -282,9 +300,10 @@ public class ReadPostActivity extends AppCompatActivity {
                     setEditDelBtn(userId); // 글 수정버튼 설정
                     postDate.setText(parseDate(post.getPostDate())); // 글 작성날짜 설정
                     postContent.setText(post.getContext()); // 글 내용 설정
-                    if(!(post.getPostImg().equals("null"))){ // 글 이미지 설정
+                    imageUrl = post.getPostImg();
+                    if(!(imageUrl.equals("null"))){ // 글 이미지 설정
                         postImage1.setVisibility(View.VISIBLE);
-                        Glide.with(postImage1).load(post.getPostImg())
+                        Glide.with(postImage1).load(imageUrl)
                                 .transform(new CenterCrop(),new RoundedCorners(25)).into(postImage1);
                     }
                     if(post.isReview()){ // 글 장소 리뷰 설정
