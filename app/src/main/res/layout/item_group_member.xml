@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/iv_userProfile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/profile_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"></ImageView>
+    <TextView
+        android:id="@+id/tv_userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이름"
+        android:textSize="18dp"
+        android:layout_gravity="center"
+        android:layout_marginRight="5dp"></TextView>
+    <TextView
+        android:id="@+id/tv_groupManager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="그룹 매니저"
+        android:textSize="12dp"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:visibility="invisible"></TextView>
+
+</LinearLayout>

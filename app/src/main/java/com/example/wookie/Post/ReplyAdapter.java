@@ -1,6 +1,9 @@
 package com.example.wookie.Post;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,21 +109,63 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             this.replyDate = itemView.findViewById(R.id.reply_date);
             this.replyContext = itemView.findViewById(R.id.reply_context);
 
-//            // 그룹방 클릭하면 해당 그룹방의 메인피드 화면으로 넘어감
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String groupId = groupList.get(getLayoutPosition()).getGroupId();
-//
-//                    Intent intent = new Intent(itemView.getContext(), BottomNaviActivity.class);
-//                    intent.putExtra("groupId", groupId);
-//                    Toast.makeText(context, "방ID:"+ groupId, Toast.LENGTH_SHORT).show();
-//
-//                    itemView.getContext().startActivity(intent);
-//                }
-//            });
+            String userLoginId = ((ReadPostActivity)ReadPostActivity.mContext).passUserLoginId;
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // 본인이 작성한 댓글일 경우
+                    if(userLoginId.equals(replyList.get(getLayoutPosition()).getUserId())){
 
+                        AlertDialog.Builder oDialog = new AlertDialog.Builder(itemView.getContext(),
+                                android.R.style.Theme_DeviceDefault_Light_Dialog);
+                        oDialog.setMessage("댓글을 삭제하시겠습니까?")
+                                .setPositiveButton("아니요", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        Log.i("Dialog", "취소");
+                                    }
+                                })
+                                .setNegativeButton("네", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.i("Dialog", "댓글 삭제");
+
+                                        String groupId = replyList.get(getLayoutPosition()).getGroupId();
+                                        String replyId = replyList.get(getLayoutPosition()).getReplyId();
+                                        String postId = replyList.get(getLayoutPosition()).getPostId();
+
+                                        delReply(groupId, replyId); // 댓글 삭제
+
+                                        Intent intent = new Intent(itemView.getContext(), ReadPostActivity.class);
+                                        intent.putExtra("groupId", groupId);
+                                        intent.putExtra("postId", postId);
+                                        itemView.getContext().startActivity(intent);
+
+                                        ((ReadPostActivity) itemView.getContext()).finish();
+                                    }
+                                })
+                                .setCancelable(true)
+                                .show();
+                        
+                        return true;
+                    }
+                    // 본인이 작성한 댓글이 아닐 경우
+                    else{
+                        return false;
+                    }
+                }
+            });
+
+        }
+
+        // 댓글 삭제
+        private void delReply(String groupId, String replyId) {
+            database = FirebaseDatabase.getInstance();
+            reference = database.getReference("reply").child(groupId);
+            reference.child(replyId).removeValue();
         }
     }
 }

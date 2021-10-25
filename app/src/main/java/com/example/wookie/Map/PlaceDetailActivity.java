@@ -193,26 +193,19 @@ public class PlaceDetailActivity extends AppCompatActivity {
                     }
                     avg = sum / isReviewCnt;
 
-//                    if (avg > 0 && avg <= 1) {
-//                        scoreImage.setImageDrawable(getDrawable(R.drawable.bad_avg));
-//                    } else if (avg > 1 && avg < 4) {
-//                        scoreImage.setImageDrawable(getDrawable(R.drawable.good_avg));
-//                    } else if (avg >= 4 && avg <= 5) {
-//                        scoreImage.setImageDrawable(getDrawable(R.drawable.rec_avg));
-//                    }
-
                     scoreAvgText.setText(Float.toString(avg));
                     postCnt.setText("포스트 " + postList.size()+"개");
 
-                    if(postList.size() > 0){
-                        postNoneText.setVisibility(View.GONE);
-                    }
-                    else if (postList.size()>3){
+                    if (postList.size()>3){
                         showMorePostBtn.setVisibility(View.VISIBLE);
                     }
 
                     Collections.reverse(postList); // 최신순으로 정렬
                     adapter.notifyDataSetChanged();
+                }
+
+                else{
+                    postNoneText.setVisibility(View.VISIBLE);
                 }
             }
 
