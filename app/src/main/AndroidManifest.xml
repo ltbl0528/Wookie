@@ -38,6 +38,7 @@
         <activity android:name=".Group.MakeGroupActivity"></activity>
         <activity android:name=".Map.ShowMapActivity"></activity>
         <activity android:name=".Feed.PlaceFeedActivity"></activity>
+        <activity android:name=".Post.ShowImgFullActivity"></activity>
 
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
