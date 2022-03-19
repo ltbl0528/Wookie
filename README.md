@@ -1,7 +1,10 @@
 # Wookie
 
-Google Firebase와 Kakao API를 이용한 공유 지도 SNS 애플리케이션
+Google Firebase와 Kakao API를 이용한 공유 지도 SNS 애플리케이션  
 <br/>
+<li> 시연 영상 : https://drive.google.com/file/d/1K3wsgIHYVEOPXL5GmHO9AKeo-0LQzbCa/view?usp=sharing
+<br/>
+  
 ## 팀원
 <li> 팀장: 이혜인 -애플리케이션 개발, 발표 자료 준비
 <li> 팀원: 김유진 -애플리케이션 개발, 시연 영상 제작 및 편집
