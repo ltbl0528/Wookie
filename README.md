@@ -13,7 +13,7 @@ Google Firebase와 Kakao API를 이용한 공유 지도 SNS 애플리케이션
 ## 개발 환경
 <li> Language - Java 1.8
 <li> IDE - Android Studio 4.1.1
-<li> DBMS - Firebase Realtime Database
+<li> Back-end - Firebase Realtime Database
 <li> API - Kakao (Login, Social, Map, Local)
 <li> OS - Windows10 / 64bit
 <li> 형상관리 - GitHub
